@@ -1,0 +1,50 @@
+﻿@model DentistAssistant.ViewModels.LoginIndexViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>登入</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/pages.min.css" />
+    <link rel="stylesheet" href="~/css/themes.min.css" />
+    <link rel="stylesheet" href="~/css/dastyle.css" />
+</head>
+<body class="theme-default page-signin-alt">
+    <h1 class="form-header">帳號登入</h1>
+    @Html.ValidationMessage("PageInfo")
+    <form method="POST" action="@Url.Action("Index", "Login")" class="panel">
+        <div class="form-group">
+            帳號：
+            @Html.DropDownListFor(m => m.UserNo, Model.Users, "選擇帳號", new { @class = "form-control" })
+            @Html.ValidationMessage("Account", null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group signin-password">
+            密碼：
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-actions">
+            <input type="submit" value="登入" class="btn btn-primary" />
+        </div>
+    </form>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+    </environment>
+</body>
+</html>

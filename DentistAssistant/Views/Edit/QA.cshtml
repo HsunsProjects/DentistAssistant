@@ -1,0 +1,101 @@
+﻿@model DentistAssistant.ViewModels.PatientRecordViewModel
+
+@{
+    Layout = null;
+}
+
+    <form method="post" action="@Url.Action("QA")" id="FormQAEdit">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" style="text-align: center">編輯</h4>
+        </div>
+        <div class="modal-body">
+            <b>來源：</b>
+            @Html.TextBoxFor(m => m.Introduce, new { @class = "form-control" })
+            <br />
+            @for (int i = 0; i < Model.QACategorys.Count; i++)
+            {
+                <b>@Model.QACategorys[i].Title</b>
+                @for (int j = 0; j < Model.QACategorys[i].QAGroupUnits.Count; j++)
+                {
+                    <div class="form-inline">
+                        @if (!string.IsNullOrEmpty(Model.QACategorys[i].QAGroupUnits[j].Title))
+                        {
+                            @Model.QACategorys[i].QAGroupUnits[j].Title
+                        }
+                        @for (int k = 0; k < Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits.Count; k++)
+                        {
+                            switch (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Type)
+                            {
+                                case "C":
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label class="text-primary">
+                                                @Html.CheckBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.IsChecked, new { id = Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Id })
+                                                <span class="lbl">@Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Title</span>
+
+                                                @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.IsValue)
+                                                {
+                                                    @Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.ValueDescription
+                                                    @Html.TextBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "form-control" })
+                                                    @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
+                                                }
+                                            </label>
+                                        </div>
+                                        @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Id)
+                                        @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Type)
+                                    </div>
+                                    break;
+                                case "T":
+                                    @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "form-control text-primary", style = "width:100%", rows = "10" })
+                                    @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Id)
+                                    @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Type)
+                                    @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
+                                    break;
+                            }
+                            @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits.Count > 0)
+                            {
+                                @for (int l = 0; l < Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits.Count; l++)
+                                {
+                                    switch (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Type)
+                                    {
+                                        case "C":
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label class="text-primary">
+                                                        @Html.CheckBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].IsChecked, new { id = Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Id })
+                                                        <span class="lbl">@Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Title</span>
+
+                                                        @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].IsValue)
+                                                        {
+                                                            @Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].ValueDescription
+                                                            @Html.TextBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "form-control" })
+                                                            @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
+                                                        }
+                                                    </label>
+                                                </div>
+                                                @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Id)
+                                                @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Type)
+                                            </div>
+                                            break;
+                                        case "T":
+                                            @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "form-control text-primary", style = "width:100%", rows = "10" })
+                                            @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Id)
+                                            @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Type)
+                                            @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                }
+            }
+            <b>醫師確認：</b>
+            @Html.DropDownListFor(m => m.QADoctor, Model.QADoctorList, "選擇帳號", new { @class = "form-control" })
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">儲存</button>
+        </div>
+        @Html.HiddenFor(m => m.Patient.Id)
+    </form>

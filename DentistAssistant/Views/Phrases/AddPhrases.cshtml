@@ -1,0 +1,33 @@
+﻿@model DentistAssistant.ViewModels.PhrasesAddPhrasesViewModel
+
+@{
+    ViewData["Title"] = "AddPhrases";
+}
+
+<h1>片語新增</h1>
+
+<div class="col-md-12">
+    <div class="form-group">
+        <button type="button" class="btn btn-default addNewRow">加入新的一列</button>
+    </div>
+    <div class="form-group">
+        <form method="post" action="@Url.Action("AddPhrases")">
+            <div class="form-group descriptionList">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextAreaFor(m => m.Description, new { id = "", @class = "form-control", rows = "6" })
+            </div>
+            <div class="form-group">
+                @Html.HiddenFor(m => m.PhraseGroupId)
+                <button type="submit" class="btn btn-primary col-md-offset-11">送出</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('.addNewRow').click(function () {
+        $('.descriptionList').append(
+            $('<label/>', { 'for': 'Description', 'text': '輸入片語' }),
+            $('<textarea/>', { 'class': 'form-control', 'name': 'Description', 'rows': '6' })
+        );
+    });
+</script>

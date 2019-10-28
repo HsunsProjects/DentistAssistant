@@ -1,0 +1,1439 @@
+﻿@model DentistAssistant.ViewModels.PatientRecordViewModel
+
+@{
+    ViewData["Title"] = "牙醫療程紀錄單";
+}
+
+
+<style rel="stylesheet" type="text/css">
+
+    .table {
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table td {
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .table tr:first-child td {
+            border-top: 0;
+        }
+
+        .table tr td:first-child {
+            border-left: 0;
+        }
+
+        .table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table tr td:last-child {
+            border-right: 0;
+        }
+</style>
+
+<style>
+    .header {
+        /*padding: 10px 16px;*/
+        background: #555;
+        color: #f1f1f1;
+    }
+    .content {
+        padding: 0px;
+    }
+    .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%
+    }
+</style>
+<style>    
+.navbar-fixed-top2 {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+.navbar-fixed-top2 {
+  top: 46px;
+  border-width: 0 0 1px;
+}
+</style>
+
+@functions
+{
+    private bool checkTime(DateTime? dateTime)
+    {
+        bool isPermit = false;
+        DateTime tmpDateTime;
+        if (DateTime.TryParse(dateTime.ToString(), out tmpDateTime))
+        {
+            isPermit = true;
+        }
+        return isPermit;
+    }
+}
+
+<div id="myHeader" class="navbar-fixed-top2" style="z-index:1;background-color:lightskyblue;">
+    <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
+</div>
+<div style="padding-top:57px">
+    <h1>牙醫療程紀錄單</h1>
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#" data-toggle="tab">牙醫療程紀錄單</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Assistant", "Patient" , new { id=Model.Patient.Id })">療程助理單</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Suggestion", "Patient" , new { id=Model.Patient.Id })">診療建議單</a>
+        </li>
+    </ul>
+
+    <div class="panel panel-collapse">
+        <div class="panel-heading">
+            <span class="panel-title">　</span>
+            <div class="panel-heading-controls">
+                <button type="button" class="btn btn-outline" data-toggle="modal" data-target="#EditQA" href="@Url.Action("QA", "Edit" , new { id=Model.Patient.Id })"><i class="fa fa-edit"></i></button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <b>來源：</b><label class="text-primary">@Model.Introduce</label>
+            <br />
+            @for (int i = 0; i < Model.QACategorys.Count; i++)
+            {
+                <b>@Model.QACategorys[i].Title</b>
+                @for (int j = 0; j < Model.QACategorys[i].QAGroupUnits.Count; j++)
+                {
+                    <div class="form-inline">
+                        @if (!string.IsNullOrEmpty(Model.QACategorys[i].QAGroupUnits[j].Title))
+                        {
+                            @Model.QACategorys[i].QAGroupUnits[j].Title
+                        }
+                        @for (int k = 0; k < Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits.Count; k++)
+                        {
+                            switch (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Type)
+                            {
+                                case "C":
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label class="text-primary">
+                                                @Html.CheckBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.IsChecked, new { @disabled = "disabled" })
+                                                <span class="lbl">@Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Title</span>
+
+                                                @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.IsValue)
+                                                {
+                                                    @Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.ValueDescription
+                                                    @Html.DisplayFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
+                                                }
+                                            </label>
+                                        </div>
+                                    </div>
+                                    break;
+                                case "T":
+                                    @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })
+                                    break;
+                            }
+                            @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits.Count > 0)
+                            {
+                                @for (int l = 0; l < Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits.Count; l++)
+                                {
+                                    switch (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Type)
+                                    {
+                                        case "C":
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label class="text-primary">
+                                                        @Html.CheckBoxFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].IsChecked, new { @disabled = "disabled" })
+                                                        <span class="lbl">@Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Title</span>
+
+                                                        @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].IsValue)
+
+                                                        {
+                                                            @Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].ValueDescription
+                                                            @Html.DisplayFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
+                                                        }
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            break;
+                                        case "T":
+                                            @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                }
+            }
+            <b>醫師確認：</b><label class="text-primary">@Model.QADoctor</label>
+        </div>
+    </div>
+
+    <div class="panel colourable">
+        <div class="panel-body">
+            <div class="form-group">
+                <label>案例見證分享：</label>
+                @Html.CheckBoxFor(m => m.ShareViewModel.IsCheckedImages, new { @class = "DisplayShareImage", @disabled = "disabled" })
+                <span class="lbl">照片</span>
+                @Html.CheckBoxFor(m => m.ShareViewModel.IsCheckedVideos, new { @class = "DisplayShareVideo", @disabled = "disabled" })
+                <span class="lbl">影像</span>
+                <button type="button" class="btn col-md-1 pull-right" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Setting" })"><i class="fa fa-edit"></i></button>
+
+            </div>
+
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">PANO</span>
+                </div>
+                <div class="panel-body">
+                    <div id="PanoB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.PANOB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.PANOB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.PANOB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PanoB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="PanoA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.PANOA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.PANOA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.PANOA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PanoA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">U-CT</span>
+                </div>
+                <div class="panel-body">
+                    <div id="UCTB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.UCTB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.UCTB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.UCTB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "UCTB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="UCTA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.UCTA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.UCTA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.UCTA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "UCTA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">L-CT</span>
+                </div>
+                <div class="panel-body">
+                    <div id="LCTB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.LCTB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.LCTB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.LCTB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "LCTB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="LCTA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.LCTA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.LCTA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.LCTA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "LCTA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">口內照</span>
+                </div>
+                <div class="panel-body">
+                    <div id="MouseInB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.MouseInB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.MouseInB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.MouseInB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MouseInB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="MouseInA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.MouseInA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.MouseInA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.MouseInA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MouseInA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">頭頂照</span>
+                </div>
+                <div class="panel-body">
+                    <div id="HeadTopB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.HeadTopB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.HeadTopB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.HeadTopB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "HeadTopB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="HeadTopA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.HeadTopA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.HeadTopA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.HeadTopA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "HeadTopA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">9宮格</span>
+                </div>
+                <div class="panel-body">
+                    <div id="NineB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.NineB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.NineB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.NineB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "NineB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="NineA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.NineA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.NineA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.NineA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "NineA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">半身照黑幕</span>
+                </div>
+                <div class="panel-body">
+                    <div id="BlackB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.BlackB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.BlackB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.BlackB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "BlackB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="BlackA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.BlackA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.BlackA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.BlackA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "BlackA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">半身照白幕</span>
+                </div>
+                <div class="panel-body">
+                    <div id="WhiteB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.WhiteB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.WhiteB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.WhiteB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "WhiteB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="WhiteA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.WhiteA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.WhiteA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.WhiteA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "WhiteA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">反射鏡</span>
+                </div>
+                <div class="panel-body">
+                    <div id="MirrorB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.MirrorB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.MirrorB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.MirrorB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MirrorB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="MirrorA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.MirrorA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.MirrorA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.MirrorA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MirrorA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">口內掃描</span>
+                </div>
+                <div class="panel-body">
+                    <div id="ScanB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.ScanB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.ScanB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.ScanB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ScanB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="ScanA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.ScanA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.ScanA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.ScanA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ScanA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">參考模</span>
+                </div>
+                <div class="panel-body">
+                    <div id="ReferenceModelB" class="form-group shareType">
+                        <label>
+                            術前：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.ReferenceModelB != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.ReferenceModelB.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.ReferenceModelB.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ReferenceModelB" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="ReferenceModelA" class="form-group shareType">
+                        <label>
+                            術後：
+                        </label>
+                        <div>
+                            @if (Model.ShareViewModel.ReferenceModelA != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.ReferenceModelA.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.ReferenceModelA.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ReferenceModelA" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">PREP</span>
+                </div>
+                <div class="panel-body">
+                    <div id="PREP" class="form-group shareType">
+                        <div>
+                            @if (Model.ShareViewModel.PREP != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.PREP.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.PREP.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PREP" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-12">
+                <div class="panel-heading">
+                    <span class="panel-title">牙托尺寸</span>
+                </div>
+                <div class="panel-body">
+                    <div id="SizeU" class="form-group">
+                        <div class="col-md-9">
+                            <label>上：</label>
+                            @if (Model.ShareViewModel.SizeU != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.SizeU.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.SizeU.UserName
+                                </label>
+                                <label class="text-primary valueDescription">
+                                    @Model.ShareViewModel.SizeU.ValueDescription
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary valueDescription">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        @*<div>
+                            </div>*@
+                        <div class="col-md-3">
+                            <div class="form-group col-md-12">
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "SizeU" })"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "SizeU" })"><i class="fa fa-edit"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <hr />
+                    </div>
+                    <div id="SizeD" class="form-group">
+                        <div class="col-md-9">
+                            <label>下：</label>
+                            @if (Model.ShareViewModel.SizeD != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.SizeD.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.SizeD.UserName
+                                </label>
+                                <label class="text-primary valueDescription">
+                                    @Model.ShareViewModel.SizeD.ValueDescription
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary valueDescription">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        @*<div>
+                            </div>*@
+                        <div class="col-md-3">
+                            <div class="form-group col-md-12">
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "SizeD" })"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "SizeD" })"><i class="fa fa-edit"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">印咬合板</span>
+                </div>
+                <div class="panel-body">
+                    <div id="Print" class="form-group shareType">
+                        <div>
+                            @if (Model.ShareViewModel.Print != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.Print.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.Print.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Print" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">拿咬合板</span>
+                </div>
+                <div class="panel-body">
+                    <div id="Take" class="form-group shareType">
+                        <div>
+                            @if (Model.ShareViewModel.Take != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.Take.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.Take.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Take" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">滴蠟模</span>
+                </div>
+                <div class="panel-body">
+                    <div id="Wax" class="form-group shareType">
+                        <div>
+                            @if (Model.ShareViewModel.Wax != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.Wax.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.Wax.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Wax" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-collapse col-md-3">
+                <div class="panel-heading">
+                    <span class="panel-title">黑筆點點黏貼處</span>
+                </div>
+                <div class="panel-body">
+                    <div id="Sticker" class="form-group shareType">
+                        <div>
+                            @if (Model.ShareViewModel.Sticker != null)
+                            {
+                                <label class="text-primary createTime">
+                                    @Model.ShareViewModel.Sticker.CreateDate.ToString("yyyy/MM/dd")
+                                </label>
+                                <label class="text-primary userName">
+                                    @Model.ShareViewModel.Sticker.UserName
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="text-primary createTime">
+                                    &nbsp;
+                                </label>
+                                <label class="text-primary userName">
+                                    &nbsp;
+                                </label>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "Sticker" })"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Sticker" })"><i class="fa fa-edit"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.IsFirstTimeExist)
+    {
+        <div class="panel panel-collapse">
+            <div class="panel-heading">
+                <span class="panel-title">初診日期 </span>
+                <div class="panel-heading-controls">
+                    <a class="btn btn-default" href="@Url.Action("EditFirstTime", "FirstTime" , new { patId = Model.Patient.Id })"><i class="fa fa-edit"></i></a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label><b>初診時間：</b></label>
+                        <label class="text-primary">@(((DateTime)Model.PatientSettingRecordViewModel.PatientSetting.FirstTimeTime).ToString("yyyy/MM/dd HH:mm"))</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label><b>診間：</b></label>
+                        <label class="text-primary">@Model.PatientSettingRecordViewModel.PatientRecordUnit.Room</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label><b>看診醫師：</b></label>
+                        <label class="text-primary">@Model.PatientSettingRecordViewModel.PatientRecordUnit.UserName</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label>預約時間：</label>
+                        <label class="text-primary">
+                            @(checkTime(Model.PatientSettingRecordViewModel.PatientRecordUnit.OrderTime) ? ((DateTime)Model.PatientSettingRecordViewModel.PatientRecordUnit.OrderTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>病患抵達：</label>
+                        <label class="text-primary">
+                            @(checkTime(Model.PatientSettingRecordViewModel.PatientRecordUnit.ArriveTime) ? ((DateTime)Model.PatientSettingRecordViewModel.PatientRecordUnit.ArriveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>起始看診：</label>
+                        <label class="text-primary">
+                            @(checkTime(Model.PatientSettingRecordViewModel.PatientRecordUnit.DrArriveTime) ? ((DateTime)Model.PatientSettingRecordViewModel.PatientRecordUnit.DrArriveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>結束看診：</label>
+                        <label class="text-primary">
+                            @(checkTime(Model.PatientSettingRecordViewModel.PatientRecordUnit.DrLeaveTime) ? ((DateTime)Model.PatientSettingRecordViewModel.PatientRecordUnit.DrLeaveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>病患離開：</label>
+                        <label class="text-primary">
+                            @(checkTime(Model.PatientSettingRecordViewModel.PatientRecordUnit.PtLeaveTime) ? ((DateTime)Model.PatientSettingRecordViewModel.PatientRecordUnit.PtLeaveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                        </label>
+                    </div>
+                </div>
+                <table class="table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>初診溝通</th>
+                            <th>下次療程</th>
+                            <th>助理</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-md-5">
+                                @for (int i = 0; i < Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF.Count; i++)
+                                {
+                                <div id="@Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Id" class="fdiArea">
+                                    <div class="form-group col-md-12">
+                                        <hr />
+                                    </div>
+                                    <div class="form-group col-md-12" @(Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area1 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area1string = string.Empty;
+                                                            foreach (FdiDetails f in area1)
+                                                            {
+                                                                area1string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area1string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area2 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                            string area2string = string.Empty;
+                                                            foreach (FdiDetails f in area2)
+                                                            {
+                                                                area2string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area2string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area4 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area4string = string.Empty;
+                                                            foreach (FdiDetails f in area4)
+                                                            {
+                                                                area4string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area4string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area3 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                            string area3string = string.Empty;
+                                                            foreach (FdiDetails f in area3)
+                                                            {
+                                                                area3string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area3string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        @Html.TextAreaFor(m => m.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                    </div>
+                                </div>
+                                }
+                            </td>
+                            <td class="col-md-5">
+                                @for (int i = 0; i < Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN.Count; i++)
+                                {
+                                    <div id="@Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].Fdi.Id" class="fdiArea">
+                                        <div class="form-group col-md-12">
+                                            <hr />
+                                        </div>
+                                        <div class="form-group col-md-12" @(Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area1 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                string area1string = string.Empty;
+                                                                foreach (FdiDetails f in area1)
+                                                                {
+                                                                    area1string += f.FdiPosition;
+                                                                }
+                                                                <label class="text-primary">@area1string</label>
+                                                            }
+                                                        </td>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area2 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                                string area2string = string.Empty;
+                                                                foreach (FdiDetails f in area2)
+                                                                {
+                                                                    area2string += f.FdiPosition;
+                                                                }
+                                                                <label class="text-primary">@area2string</label>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area4 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                string area4string = string.Empty;
+                                                                foreach (FdiDetails f in area4)
+                                                                {
+                                                                    area4string += f.FdiPosition;
+                                                                }
+                                                                <label class="text-primary">@area4string</label>
+                                                            }
+                                                        </td>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area3 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                                string area3string = string.Empty;
+                                                                foreach (FdiDetails f in area3)
+                                                                {
+                                                                    area3string += f.FdiPosition;
+                                                                }
+                                                                <label class="text-primary">@area3string</label>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            @Html.TextAreaFor(m => m.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsN[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                }
+                            </td>
+                            <td class="col-md-2">
+                                @for (int i = 0; i < Model.PatientSettingRecordViewModel.PatientRecordUnit.RecordUserUnit.Count; i++)
+                                {
+                                    <div id="@Model.PatientSettingRecordViewModel.PatientRecordUnit.RecordUserUnit[i].Id" class="form-group userArea">
+                                        <div class="form-group col-md-12">
+                                            <hr />
+                                        </div>
+                                        <label class="text-primary">@Model.PatientSettingRecordViewModel.PatientRecordUnit.RecordUserUnit[i].UserName</label>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreateFirstTime" href="@Url.Action("CreateFirstTime", "FirstTime" , new { id=Model.Patient.Id })">建立初診詢問單</button>
+        </div>
+    }
+</div>
+
+<div id="EditQA" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div id="CreateShare" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div id="EditShare" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div id="CreateFirstTime" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<script>
+    // When the user scrolls the page, execute myFunction
+    window.onscroll = function () { myFunction() };
+
+    // Get the header
+    var header = document.getElementById("myHeader");
+
+    // Get the offset position of the navbar
+    var sticky = header.offsetTop;
+
+    function myFunction() {
+        if (window.pageYOffset > sticky) {
+            header.classList.remove("navbar-fixed-top2");
+            header.classList.add("navbar-fixed-top");
+        } else {
+            header.classList.remove("navbar-fixed-top");
+            header.classList.add("navbar-fixed-top2");
+        }
+    }
+
+    $("#EditShare").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+        //window.location.reload();
+    });
+    $("#CreateShare").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+        //window.location.reload();
+    });
+</script>
+
+<script>
+    $('.shareType').on('click', '.addShareType', function () {
+        var shareType = $(this).parent('.shareType');
+        var shareTypeId = shareType.attr('id');
+        var createTime = shareType.find('.createTime');
+        var userName = shareType.find('.userName');
+        $.ajax({
+        type: 'POST',
+            url: '/Edit/AddShareType',
+            data: { patId : '@(Model.Patient.Id)', shareTypeId: shareTypeId },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        createTime.text(result.info.time);
+                        userName.text(result.info.userName);
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>

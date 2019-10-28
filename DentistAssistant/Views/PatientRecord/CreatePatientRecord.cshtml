@@ -1,0 +1,36 @@
+﻿@model DentistAssistant.ViewModels.CreatePatientRecordViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>建立病患詢問紀錄</title>
+</head>
+<body>
+    <div class="col-md-12">
+        <h1>建立病患詢問紀錄</h1>
+        <div class="form-group">
+            <form method="post" action="@Url.Action("CreatePatientRecord")">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>診間:</label>
+                        @Html.TextBoxFor(m => m.patientRecord.Room, new { @class = "form-control" })
+                        <label>看診醫師:</label>
+                    </div>
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(m => m.patientRecord.UserNo, Model.Users, "選擇醫師", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.patientRecord.UserNo)
+                        @Html.HiddenFor(m => m.PatientId)
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary col-lg-offset-11">建立</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

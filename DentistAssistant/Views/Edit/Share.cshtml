@@ -1,0 +1,475 @@
+﻿@model DentistAssistant.ViewModels.Share
+@{
+    Layout = null;
+}
+
+<link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/js/jquery.datetimepicker.full.js"></script>
+<!--
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Share</title>
+</head>
+<body>
+    <form method="post" action="@Url.Action("Share")" id="FormShareEdit">
+    -->
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title" style="text-align: center">編輯</h4>
+</div>
+<div class="modal-body">
+    @switch (Model.ShareType)
+    {
+        case "Setting":
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">案例見證分享：</label>
+                @Html.CheckBoxFor(m => m.IsCheckedImages, new { @class = "text-primary IsCheckedImages" })
+                <span class="lbl">照片</span>
+                @Html.CheckBoxFor(m => m.IsCheckedVideos, new { @class = "text-primary IsCheckedVideos" })
+                <span class="lbl">影像</span>
+            </div>
+            break;
+        case "SizeU":
+        case "SizeD":
+            @for (int i = 0; i < Model.Shares.Count; i++)
+            {
+                <div id="@Model.Shares[i].Id" class="form-group EditShareGroup">
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(m => m.Shares[i].CreateDate, new { @class = "form-control text-primary EditShareCreateDate" })
+                    </div>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(m => m.Shares[i].ValueDescription, new { @class = "form-control EditShareValueDescription" })
+                    </div>
+                    <button type="button" class="col-md-2 removeShare">刪除</button>
+                </div>
+            }
+            break;
+        case "Sticker":
+            @for (int i = 0; i < Model.Shares.Count; i++)
+            {
+                <div id="@Model.Shares[i].Id" class="form-group EditShareGroup">
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(m => m.Shares[i].CreateDate, new { @class = "form-control text-primary EditShareCreateDate" })
+                    </div>
+                    <div class="col-md-5">
+                        @Html.DropDownListFor(m => m.Shares[i].UserNo, Model.Users, "選擇帳號", new { @class = "form-control EditShareUpdateUserNo" })
+                    </div>
+                    <button type="button" class="col-md-2 removeShare">刪除</button>
+                </div>
+            }
+            break;
+        default:
+            @for (int i = 0; i < Model.Shares.Count; i++)
+            {
+                <div id="@Model.Shares[i].Id" class="form-group EditShareGroup">
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(m => m.Shares[i].CreateDate, new { @class = "form-control text-primary EditShareCreateDate" })
+                    </div>
+                    <div class="col-md-5">
+                        @*@Html.DropDownListFor(m => m.Shares[i].UserNo, Model.Users, "選擇帳號", new { @class = "form-control" })*@
+                        @Html.DisplayFor(m => m.Shares[i].UserName, new { @class = "form-control" })
+                    </div>
+                    <button type="button" class="col-md-2 removeShare">刪除</button>
+                </div>
+            }
+            break;
+    }
+</div>
+<div class="modal-footer">
+    @*<button type="submit" class="btn btn-primary">儲存</button>*@
+    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+</div>
+<script>
+    jQuery.datetimepicker.setLocale('zh-TW');
+    $('.EditShareCreateDate').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            var shareGroup = $input.parent().parent('.EditShareGroup');
+            var shareId = $(shareGroup).attr('id');
+            UpdateTime(shareId, $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            var shareGroup = $input.parent().parent('.EditShareGroup');
+            var shareId = $(shareGroup).attr('id');
+            UpdateTime(shareId, $input.val());
+        }
+    });
+
+    function UpdateTime(id, dateTime) {
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/UpdateShareCreateDate',
+            data: { id: id, dateTime: dateTime },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        if (result.isUpdate) {
+                            var shareTypeId = result.updateShareType;
+                            var updateCreateDate = result.updateCreateDate;
+                            var shareType = $('#' + shareTypeId);
+                            shareType.find('.createTime').text(updateCreateDate);
+                        }
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('.IsCheckedImages').change(function () {
+            var isChecked = this.checked;
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/ShareImageChanged',
+                data: { patId: '@(Model.Patient.Id)', isChecked: isChecked },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            $('.DisplayShareImage').prop('checked', isChecked);
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+
+        $('.IsCheckedVideos').change(function () {
+            var isChecked = this.checked;
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/ShareVideoChanged',
+                data: { patId: '@(Model.Patient.Id)', isChecked },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            $('.DisplayShareVideo').prop('checked', isChecked);
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+
+        $('.EditShareValueDescription').change(function () {
+            var shareGroup = $(this).parent().parent('.EditShareGroup');
+            var shareId = $(shareGroup).attr('id');
+            var valueDescription = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/UpdateShareValueDescription',
+                data: { id: shareId, valueDescription: valueDescription },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            if (result.isUpdate) {
+                                var shareTypeId = result.updateShareType;
+                                var updateCreateDate = result.updateCreateDate;
+                                var updateValueDescription = result.updateValueDescription;
+                                var shareType = $('#' + shareTypeId);
+                                shareType.find('.createTime').text(updateCreateDate);
+                                shareType.find('.valueDescription').text(updateValueDescription);
+                            }
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+        
+        $('.EditShareUpdateUserNo').change(function () {
+            var shareGroup = $(this).parent().parent('.EditShareGroup');
+            var shareId = $(shareGroup).attr('id');
+            var userNo = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/UpdateShareUserNo',
+                data: { id: shareId, userNo: userNo },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            if (result.isUpdate) {
+                                var shareTypeId = result.updateShareType;
+                                var updateCreateDate = result.updateCreateDate;
+                                var updateUserName = result.updateUserName;
+                                var shareType = $('#' + shareTypeId);
+                                shareType.find('.createTime').text(updateCreateDate);
+                                shareType.find('.userName').text(updateUserName);
+                            }
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+
+        $('.removeShare').click(function () {
+            var shareGroup = $(this).parent('.EditShareGroup');
+            var shareId = $(shareGroup).attr('id');
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/RemoveShare',
+                data: { id: shareId },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            shareGroup.remove();
+                            if (result.isUpdate) {
+                                var shareTypeId = result.updateShareType;
+                                var shareType = $('#' + shareTypeId);
+                                shareType.find('.createTime').html("&nbsp;");
+                                shareType.find('.userName').html("&nbsp;");
+                                if (updateShareType == "SizeU" || updateShareType == "SizeD") {
+                                    shareType.find('.valueDescription').html("&nbsp;");
+                                }
+                            }
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+    });
+</script>
+<!--
+</form>
+-->
+<!--
+<script>
+    $(document).ready(function () {
+        $('#IsCheckedImages').change(function () {
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/ShareImageChanged',
+                data: { patId: '@*@(Model.Patient.Id)*@', isChecked: this.checked },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+
+        $('#IsCheckedVideos').change(function () {
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/ShareVideoChanged',
+                data: { patId: '@*@(Model.Patient.Id)*@'', isChecked: this.checked },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                        }
+                        else {
+                            alert(message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+    });
+
+    $(document).on('click', '.removeOperatorLI', function () {
+        var imageGroup = $(this).closest('.imageGroup');
+        var id = imageGroup.attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/RemoveOperator',
+            data: { id: id },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        imageGroup.remove();
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+
+    $('.imageGroup').on('click', '.setOperator', function () {
+        var imageType = $(this).closest('.imageType');
+        var imageGroup = $(this).closest('.imageGroup');
+        var imageTypeId = imageType.attr('id');
+        var id = imageGroup.attr('id');
+        var imageMode = imageGroup.attr('imageMode');
+        var valueDescription = imageGroup.find('.valueDescription').val()
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/EditOperator',
+            data: { patId : '@*@(Model.Patient.Id)*@'', imageTypeId: imageTypeId, id: id, imageMode: imageMode, valueDescription : valueDescription },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        imageGroup.attr('id', result.info.id);
+                        imageGroup.find('.time').text(result.info.time);
+                        imageGroup.find('.userNo').text(result.info.userNo);
+                        imageGroup.find('.userName').text(result.info.userName);
+                    }
+                    else {
+                        alert('程式發生問題');
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+
+    $('.imageGroup').on('click', '.removeOperator', function () {
+        var imageGroup = $(this).closest('.imageGroup');
+        var id = imageGroup.attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/RemoveOperator',
+            data: { id: id },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        imageGroup.attr('id', '');
+                        imageGroup.find('.time').text('');
+                        imageGroup.find('.userNo').text('');
+                        imageGroup.find('.userName').text('');
+                        imageGroup.find('.valueDescription').val('');
+                        imageGroup.find('.doctorNo').val('');
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+
+    $('.imageGroup').on('click', '.setSticker', function () {
+        var imageType = $(this).closest('.imageType');
+        var imageGroup = $(this).closest('.imageGroup');
+        var userNo = imageType.find('.doctorNo').val();
+        var imageTypeId = imageType.attr('id');
+        var id = imageGroup.attr('id');
+        var imageMode = imageGroup.attr('imageMode');
+        console.log(userNo);
+        if (userNo != '') {
+            $.ajax({
+                type: 'POST',
+                url: '/Edit/EditSticker',
+                data: { patId: '@*@(Model.Patient.Id)*@'', imageTypeId: imageTypeId, id: id, imageMode: imageMode, userNo: userNo },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            imageGroup.attr('id', result.info.id);
+                            imageGroup.find('.time').text(result.info.time);
+                        }
+                        else {
+                            alert('程式發生問題');
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        } else {
+            alert('請選擇醫師');
+        }
+    });
+
+    $('.imageTypeLI').on('click', '.setOperatorLI', function () {
+        var imageTypeLI = $(this).closest('.imageTypeLI');
+        var imageTypeId = imageTypeLI.attr('id');
+        var imageMode = imageTypeLI.attr('imageMode');
+        var id = $(this).find('imageGroup').attr('id');
+        //var appendArea = $(imageTypeLI.find('appendArea'));
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/AddImageTypeLI',
+            data: { patId: '@*@(Model.Patient.Id)*@'', imageTypeId: imageTypeId, id: id, imageMode: imageMode },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        console.log(result.info.id);
+                        $('.appendArea').prepend(
+                            $('<div/>', { 'id': result.info.id, 'class': 'imageGroup' }).append(
+                                $('<label/>', { 'class': 'col-md-3 col-form-label time', 'text': result.info.time }),
+                                $('<label/>', { 'class': 'col-md-2 col-form-label userNo', 'text': result.info.userNo }),
+                                $('<label/>', { 'class': 'col-md-3 col-form-label userName', 'text': result.info.userName }),
+                                $('<label/>', { 'class': 'col-md-3 col-form-label' }).html("&nbsp;"),
+                                $('<button/>', { 'type': 'button', 'class': 'col-md-1 btn btn-danger removeOperatorLI', 'text': ' - ' })
+                            )
+                        );
+                    }
+                    else {
+                        alert('程式發生問題');
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>
+
+-->
+<!--
+</body>
+</html>
+
+-->

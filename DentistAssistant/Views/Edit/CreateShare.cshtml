@@ -1,0 +1,103 @@
+﻿@model DentistAssistant.ViewModels.CreateShare
+
+@{
+    Layout = null;
+}
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title" style="text-align: center">新增</h4>
+</div>
+<div class="modal-body">
+    @switch (Model.ShareTypeId)
+    {
+        case "Sticker":
+            <div class="form-group stickerGroup">
+                <div class="col-md-5">
+                    <label>
+                        @Model.CreateDate.ToString("yyyy/MM/dd HH:mm")
+                    </label>
+                </div>
+                <div class="col-md-5">
+                    @Html.DropDownListFor(m => m.UserNo, Model.Users, "選擇帳號", new { @class = "form-control doctorNo" })
+                </div>
+                <button type="button" class="col-md-2 createShareSticker">新增</button>
+            </div>
+            break;
+        case "SizeU":
+        case "SizeD":
+            <div class="form-group sizeGroup">
+                <div class="col-md-3">
+                    <label>
+                        @Model.CreateDate.ToString("yyyy/MM/dd HH:mm")
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ValueDescription, new { @class = "form-control", id = "CreateShareValueDescription" })
+                </div>
+                <div class="col-md-3">
+                    @Html.DisplayFor(m => m.UserName, new { @class = "form-control" })
+                </div>
+                <button type="button" class="col-md-2 createShareSize">新增</button>
+            </div>
+            break;
+    }
+</div>
+<div class="modal-footer">
+    @*<button type="submit" class="btn btn-primary">儲存</button>*@
+    <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+</div>
+<script>
+    $('.createShareSticker').click(function () {
+        var stickerGroup = $(this).closest('.stickerGroup');
+        var userNo = stickerGroup.find('.doctorNo').val();
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/CreateShare',
+            data: { patId: '@Model.PatId', valueDescription: '', userNo: userNo, createDate: '@(Html.Raw(Model.CreateDate))', shareTypeId: '@Model.ShareTypeId' },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        $('#Sticker').find('.createTime').text(result.info.time);
+                        $('#Sticker').find('.userName').text(result.info.userName);
+                        $('#CreateShare').modal('hide')
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+
+    $('.createShareSize').click(function () {
+        var sizeGroup = $(this).closest('.sizeGroup');
+        var valueDescription = sizeGroup.find('#CreateShareValueDescription').val();
+        var shareTypeId = '@Model.ShareTypeId';
+        $.ajax({
+            type: 'POST',
+            url: '/Edit/CreateShare',
+            data: { patId: '@Model.PatId', valueDescription: valueDescription, createDate: '@(Html.Raw(Model.CreateDate))', shareTypeId: shareTypeId },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        $('#' + shareTypeId).find('.createTime').text(result.info.time);
+                        $('#' + shareTypeId).find('.userName').text(result.info.userName);
+                        $('#' + shareTypeId).find('.valueDescription').text(result.info.valueDescription);
+                        $('#CreateShare').modal('hide')
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>

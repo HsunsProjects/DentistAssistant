@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "片語分類";
+}
+
+<h1>片語分類</h1>
+
+<div class="panel panel-collapse">
+    <div class="panel-heading">
+        <span class="panel-title">　</span>
+        <div class="panel-heading-controls">
+            <a type="button" class="btn btn-outline" data-toggle="modal" data-target="#CreatePhraseGroup">建立分類</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table id="CreatePhraseGroupTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>片語</th>
+                    <th class="col-md-1">功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pg in Model)
+                {
+                    <tr id="@pg.Id" class="CreatePhraseGroupRow">
+                        <td>@pg.Name</td>
+                        <td>
+                            <a href="@Url.Action("Index", "Phrases", new { phraseGroupId = pg.Id })" class="btn btn-primary">編輯</a>
+                            <a class="btn btn-danger removePhraseGroup">刪除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="CreatePhraseGroup" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" style="text-align: center">新增</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="col-md-5">
+                        <label>
+                            分類名稱：
+                        </label>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" id="phraseGroupName" name="phraseGroupName" />
+                    </div>
+                    <button type="button" class="col-md-2 CreatePhraseGroupName">新增</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            @*<button type="submit" class="btn btn-primary">儲存</button>*@
+            <button type="button" class="btn btn-primary" data-dismiss="modal">關閉</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    $("#CreatePhraseGroup").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+        window.location.reload();
+    });
+    
+    //$(document).on('click', '.CreatePhraseGroupName', function () {        
+    //    var groupName = $('#phraseGroupName').val();
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: '/Phrases/CrearePhraseGroupName',
+    //        data: { phraseGroupName: groupName },
+    //        success: function (result) {
+    //            if (result) {
+    //                if (result.status) {
+    //                    $("#CreatePhraseGroupTable tbody").append(
+    //                        $('<tr/>', { 'id': result.info.phraseGroupId, 'class': 'CreatePhraseGroupRow'}).append(
+    //                            $('<td/>').append(
+    //                                result.info.phraseGroupName
+    //                            ),
+    //                            $('<td/>').append(
+    //                                $('<a/>', { 'href': '/Phrases?phraseGroupId=' + result.info.phraseGroupId, 'text': '編輯', 'class': 'btn btn-primary' }),
+    //                                $('<a/>', { 'text': '刪除', 'class': 'btn btn-danger removePhraseGroup' })
+    //                            )
+    //                        )
+    //                    );
+    //                }
+    //                else {
+    //                    alert(message);
+    //                }
+    //            }
+    //            else {
+    //                alert('沒有回應');
+    //            }
+    //        }
+    //    });
+    //});
+
+    $('.CreatePhraseGroupName').click(function () {
+        var groupName = $('#phraseGroupName').val();
+        $.ajax({
+            type: 'POST',
+            url: '/Phrases/CrearePhraseGroupName',
+            data: { phraseGroupName: groupName },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        $('#CreatePhraseGroup').modal('hide');
+                        //$("#CreatePhraseGroupTable tbody").append(
+                        //    $('<tr/>', { 'id': result.info.phraseGroupId, 'class': 'CreatePhraseGroupRow'}).append(
+                        //        $('<td/>').append(
+                        //            result.info.phraseGroupName
+                        //        ),
+                        //        $('<td/>').append(
+                        //            $('<a/>', { 'href': '/Phrases?phraseGroupId=' + result.info.phraseGroupId, 'text': '編輯', 'class': 'btn btn-primary' }),
+                        //            $('<a/>', { 'text': '刪除', 'class': 'btn btn-danger removePhraseGroup' })
+                        //        )
+                        //    )
+                        //);
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+    
+    $(document).on('click', '.removePhraseGroup', function () {
+        var phraseGroupRow = $(this).closest('.CreatePhraseGroupRow');
+        var phraseGroupId = phraseGroupRow.attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '/Phrases/DeletePhraseGroup',
+            data: { phraseGroupId: phraseGroupId },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        phraseGroupRow.remove();
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+    //$('.removePhraseGroup').click(function () {
+    //    var phraseGroupRow = $(this).closest('.CreatePhraseGroupRow');
+    //    var phraseGroupId = phraseGroupRow.attr('id');
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: '/Phrases/DeletePhraseGroup',
+    //        data: { phraseGroupId: phraseGroupId },
+    //        success: function (result) {
+    //            if (result) {
+    //                if (result.status) {
+    //                    phraseGroupRow.remove();
+    //                }
+    //                else {
+    //                    alert(message);
+    //                }
+    //            }
+    //            else {
+    //                alert('沒有回應');
+    //            }
+    //        }
+    //    });
+    //});
+</script>

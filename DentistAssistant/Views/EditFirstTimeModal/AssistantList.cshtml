@@ -1,0 +1,60 @@
+﻿@model DentistAssistant.ViewModels.AssistantListViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AssistantList</title>
+</head>
+<body>
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Users)
+            @Html.DropDownListFor(m => m.UserNo, Model.Users, "選擇帳號", new { @class = "form-control", id = "users" })
+        </div>
+        <div class="form-group">
+            <button id="addUsers" type="button" class="btn btn-primary pull-right" data-dismiss="modal">加入</button>
+        </div>
+    </div>
+    <script>
+        $('#addUsers').click(function () {
+            var userNo = $('#users').val();
+            var userName = $('#users :selected').text();
+            console.log(userNo + ',' + userName);
+            $.ajax({
+                type: 'POST',
+                url: '/EditFirstTimeModal/AddAssistant',
+                data: { patientRecordId: '@Model.PatientRecordId', userNo: userNo },
+                success: function (result) {
+                    if (result) {
+                        if (result.status) {
+                            $('#assistantArea').prepend(
+                                $('<div/>', { 'id': result.data.id, 'class': 'form-group userArea' }).append(
+                                    $('<div/>', { 'class': 'form-group col-md-12' }).append(
+                                        $('<hr />')
+                                    ),
+                                    $('<label/>', { 'text': userName, 'class': 'text-primary' }).append(),
+                                    $('<button/>', { 'class': 'btn btn-danger userremove pull-right', 'type': 'button' }).append(
+                                        $('<i/>', { 'class': 'fa fa-trash-o' })
+                                    )
+                                )
+                            );
+                        }
+                        else {
+                            alert(result.message);
+                        }
+                    }
+                    else {
+                        alert('沒有回應');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

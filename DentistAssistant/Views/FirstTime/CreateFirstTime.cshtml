@@ -1,0 +1,55 @@
+﻿@model DentistAssistant.ViewModels.CreateFirstTimeViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>建立初診詢問單</title>
+</head>
+<body>
+    <div class="col-md-12">
+        <h1>建立初診詢問單</h1>
+        <div class="form-group">
+            <form id="form1" name="form1" method="post" action="@Url.Action("CreateFirstTime")" onclick="return false">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>初診時間:</label>
+                        @Html.DisplayFor(m => m.FirstTime, "{0:yyyy/MM/dd HH:ss}")
+                    </div>
+                    <div class="col-md-12">
+                        <label>診間:</label>
+                        @Html.TextBoxFor(m => m.patientRecord.Room, new { @class = "form-control", @name = "Room", id = "Room" })
+                        <label>看診醫師:</label>
+                    </div>
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(m => m.patientRecord.UserNo, Model.Users, "選擇醫師", new { @class = "form-control", id = "firstTimeDoc" })
+                        @Html.HiddenFor(m => m.PatientId)
+                        @Html.HiddenFor(m => m.FirstTime)
+                    </div>
+                </div>
+                <button type="submit" name="button" id="button" class="btn btn-primary col-lg-offset-11">建立</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {            
+            $("#button").click(function () {
+                if ($("#Room").val() == "") {
+                    alert("你尚未填寫診間");
+                    eval("document.form1['Room'].focus()");
+                } else if ($('#firstTimeDoc :selected').val() == "") {
+                    alert("請選擇看診醫師");
+                    eval("document.form1['firstTimeDoc'].focus()");
+                } else {
+                    document.form1.submit();
+                }
+            })
+        });
+    </script>
+</body>
+</html>

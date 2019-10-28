@@ -1,0 +1,435 @@
+﻿@model DentistAssistant.ViewModels.PatientSettingRecordViewModel
+
+@{
+    ViewData["Title"] = "EditFirstTime";
+}
+
+<!--jquery confirm-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+<link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/js/jquery.datetimepicker.full.js"></script>
+<style rel="stylesheet" type="text/css">
+    
+    .table {
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table td {
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .table tr:first-child td {
+            border-top: 0;
+        }
+
+        .table tr td:first-child {
+            border-left: 0;
+        }
+
+        .table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table tr td:last-child {
+            border-right: 0;
+        }
+</style>
+
+<h1>編輯初診詢問單</h1>
+
+<div>
+    <form method="post" action="@Url.Action("EditFirstTime")">
+        <div class="form-group">
+            <a href="@Url.Action("Record", "Patient", new { id = Model.PatientSetting.Id })"><i class="fa fa-arrow-circle-o-left"></i>返回牙醫療程紀錄單</a>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <h4>
+                    <label><b>初診時間：</b></label>
+                    <label class="text-primary">
+                        @Html.DisplayFor(m => m.PatientSetting.FirstTimeTime, "{0:yyyy/MM/dd HH:ss}")
+                    </label>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <label><b>診間：</b></label>
+                    <label class="text-primary">
+                        @Html.DisplayFor(m => m.PatientRecordUnit.Room)
+                    </label>
+                </h4>
+            </div>
+            <div class="col-md-4">
+                <h4>
+                    <label><b>看診醫師：</b></label>
+                    <label class="text-primary">
+                        @Html.DisplayFor(m => m.PatientRecordUnit.UserName)
+                    </label>
+                </h4>
+            </div>
+        </div>
+        <div class="form-group form-inline">
+            <label>預約時間:</label>
+            @Html.TextBoxFor(m => m.PatientRecordUnit.OrderTime, new { @class = "form-control text-primary", id = "OrderTime" })
+            <label>病患抵達:</label>
+            @Html.TextBoxFor(m => m.PatientRecordUnit.ArriveTime, new { @class = "form-control text-primary", id = "ArriveTime" })
+            <label>起始看診:</label>
+            @Html.TextBoxFor(m => m.PatientRecordUnit.DrArriveTime, new { @class = "form-control text-primary", id = "DrArriveTime" })
+            <label>結束看診:</label>
+            @Html.TextBoxFor(m => m.PatientRecordUnit.DrLeaveTime, new { @class = "form-control text-primary", id = "DrLeaveTime" })
+            <label>病患離開:</label>
+            @Html.TextBoxFor(m => m.PatientRecordUnit.PtLeaveTime, new { @class = "form-control text-primary", id = "PtLeaveTime" })
+        </div>
+        <div class="form-group">
+            <table class="table-bordered" width="100%">
+                <thead>
+                    <tr>
+                        <th>初診溝通<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordUnit.Id, type = "F" })"><i class="fa fa-plus"></i></button></th>
+                        <th>下次療程<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordUnit.Id, type = "N" })"><i class="fa fa-plus"></i></button></th>
+                        <th>填寫助理<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#AssistantList" href="@Url.Action("AssistantList", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordUnit.Id })"><i class="fa fa-plus"></i></button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-md-5" id="descriptionArea">
+                            @for (int i = 0; i < Model.PatientRecordUnit.FdiUnitsF.Count; i++)
+                            {
+                                <div id="@Model.PatientRecordUnit.FdiUnitsF[i].Fdi.Id" class="fdiArea">
+                                    <div class="form-group col-md-12">
+                                        <hr />
+                                    </div>
+                                    <div class="form-group col-md-12" @(Model.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area1 = @Model.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area1string = string.Empty;
+                                                            foreach (FdiDetails f in area1)
+                                                            {
+                                                                area1string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area1string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area2 = @Model.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                            string area2string = string.Empty;
+                                                            foreach (FdiDetails f in area2)
+                                                            {
+                                                                area2string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area2string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area4 = @Model.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area4string = string.Empty;
+                                                            foreach (FdiDetails f in area4)
+                                                            {
+                                                                area4string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area4string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area3 = @Model.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                            string area3string = string.Empty;
+                                                            foreach (FdiDetails f in area3)
+                                                            {
+                                                                area3string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area3string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        @Html.TextAreaFor(m => m.PatientRecordUnit.FdiUnitsF[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button class="btn btn-default col-md-offset-9" type="button" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordUnit.Id, fdiId = Model.PatientRecordUnit.FdiUnitsF[i].Fdi.Id, type = "F" })"><i class="fa fa-edit"></i></button>
+                                        <button class="btn btn-danger fdiremove" type="button"><i class="fa fa-trash-o"></i></button>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                        <td class="col-md-5" id="nextDealArea">
+                            @for (int i = 0; i < Model.PatientRecordUnit.FdiUnitsN.Count; i++)
+                            {
+                                <div id="@Model.PatientRecordUnit.FdiUnitsN[i].Fdi.Id" class="fdiArea">
+                                    <div class="form-group col-md-12">
+                                        <hr />
+                                    </div>
+                                    <div class="form-group col-md-12" @(Model.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area1 = @Model.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area1string = string.Empty;
+                                                            foreach (FdiDetails f in area1)
+                                                            {
+                                                                area1string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area1string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area2 = @Model.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                            string area2string = string.Empty;
+                                                            foreach (FdiDetails f in area2)
+                                                            {
+                                                                area2string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area2string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area4 = @Model.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                            string area4string = string.Empty;
+                                                            foreach (FdiDetails f in area4)
+                                                            {
+                                                                area4string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area4string</label>
+                                                        }
+                                                    </td>
+                                                    <td style="width:50%;">
+                                                        @{
+                                                            var area3 = @Model.PatientRecordUnit.FdiUnitsN[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                            string area3string = string.Empty;
+                                                            foreach (FdiDetails f in area3)
+                                                            {
+                                                                area3string += f.FdiPosition;
+                                                            }
+                                                            <label class="text-primary">@area3string</label>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        @Html.TextAreaFor(m => m.PatientRecordUnit.FdiUnitsN[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button class="btn btn-default col-md-offset-9" type="button" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordUnit.Id, fdiId = Model.PatientRecordUnit.FdiUnitsN[i].Fdi.Id, type = "N" })"><i class="fa fa-edit"></i></button>
+                                        <button class="btn btn-danger fdiremove" type="button"><i class="fa fa-trash-o"></i></button>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                        <td class="col-md-2" id="assistantArea">
+                            @for (int i = 0; i < Model.PatientRecordUnit.RecordUserUnit.Count; i++)
+                            {
+                                <div id="@Model.PatientRecordUnit.RecordUserUnit[i].Id" class="form-group userArea">
+                                    <div class="form-group col-md-12">
+                                        <hr />
+                                    </div>
+                                    <label class="text-primary">@Model.PatientRecordUnit.RecordUserUnit[i].UserName</label>
+                                    <button class="btn btn-danger userremove pull-right" type="button"><i class="fa fa-trash-o"></i></button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a href="@Url.Action("Record", "Patient", new { id = Model.PatientSetting.Id })" class="btn btn-primary pull-right">返回</a>
+    </form>
+</div>
+
+<div id="FdiDescription" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div id="AssistantList" class="modal fade">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#FdiDescription").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+    });
+
+    $(document).on('click', '.fdiremove', function () {
+        var $fdiArea = $(this).closest('.fdiArea');
+        var id = $fdiArea.attr('id');        
+        $.confirm({
+            title: '提示',
+            content: '<p>是否刪除此牙位明細？</p>',
+            buttons: {
+                cancel: {
+                    text: '取消',
+                    action: function () {
+                    }
+                },
+                confirm: {
+                    text: '確定',
+                    btnClass: 'btn btn-danger delete',
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/EditFirstTimeModal/RemoveFdiDescription',
+                            data: { id: id },
+                            success: function (result) {
+                                if (result) {
+                                    if (result.status) {
+                                        $fdiArea.remove();
+                                    }
+                                    else {
+                                        alert(message);
+                                    }
+                                }
+                                else {
+                                    alert('沒有回應');
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.userremove', function () {
+        var $userArea = $(this).closest('.userArea');
+        var id = $userArea.attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '/EditFirstTimeModal/RemoveAssistant',
+            data: { id: id },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        $userArea.remove();
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>
+<script>
+    var int = 0;
+    jQuery.datetimepicker.setLocale('zh-TW');
+    $('#OrderTime').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            UpdateTime('1', $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            UpdateTime('1', $input.val());
+            console.log($input.val());
+        }
+    });
+    jQuery('#ArriveTime').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            UpdateTime('2', $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            UpdateTime('2', $input.val());
+            console.log($input.val());
+        }
+    });
+    jQuery('#DrArriveTime').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            UpdateTime('3', $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            UpdateTime('3', $input.val());
+            console.log($input.val());
+        }
+    });
+    jQuery('#DrLeaveTime').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            UpdateTime('4', $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            UpdateTime('4', $input.val());
+            console.log($input.val());
+        }
+    });
+    jQuery('#PtLeaveTime').datetimepicker({
+        step: 1,
+        closeOnWithoutClick: false,
+        validateOnBlur: false,
+        allowBlank: false,
+        defaultSelect: false,
+        onSelectDate: function (dp, $input) {
+            UpdateTime('5', $input.val());
+        },
+        onSelectTime: function (dp, $input) {
+            UpdateTime('5', $input.val());
+            console.log($input.val());
+        }
+    });
+
+    function UpdateTime(timeType, dateTime) {
+        $.ajax({
+            type: 'POST',
+            url: '/FirstTime/UpdatePatientRecords',
+            data: { id: '@(Model.PatientRecordUnit.Id)', timeType: timeType, dateTime: dateTime },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                    }
+                    else {
+                        alert(message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    }
+</script>

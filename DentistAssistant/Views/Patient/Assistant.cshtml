@@ -1,0 +1,417 @@
+﻿@model DentistAssistant.ViewModels.AssistantViewModel
+@{
+    ViewData["Title"] = "療程助理單";
+}
+
+<!--jquery confirm-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+<style rel="stylesheet" type="text/css">
+
+    .table {
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table td {
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .table tr:first-child td {
+            border-top: 0;
+        }
+
+        .table tr td:first-child {
+            border-left: 0;
+        }
+
+        .table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table tr td:last-child {
+            border-right: 0;
+        }
+</style>
+
+<style>
+    .header {
+        /*padding: 10px 16px;*/
+        background: #555;
+        color: #f1f1f1;
+    }
+
+    .content {
+        padding: 0px;
+    }
+
+    .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%
+    }
+</style>
+<style>
+    .navbar-fixed-top2 {
+        position: fixed;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .navbar-fixed-top2 {
+        top: 46px;
+        border-width: 0 0 1px;
+    }
+</style>
+
+@functions
+{
+    private bool checkTime(DateTime? dateTime)
+    {
+        bool isPermit = false;
+        DateTime tmpDateTime;
+        if (DateTime.TryParse(dateTime.ToString(), out tmpDateTime))
+        {
+            isPermit = true;
+        }
+        return isPermit;
+    }
+}
+
+<div id="myHeader" class="navbar-fixed-top2" style="z-index:1;background-color:lightskyblue;">
+    <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
+    <h2>注意事項：@(Model.Notes)</h2>
+</div>
+<div style="padding-top:104px">
+    <h1>療程助理單</h1>
+    <ul class="nav nav-tabs">
+        <li>
+            <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.Id })">牙醫療程紀錄單</a>
+        </li>
+        <li class="active">
+            <a href="#" data-toggle="tab">療程助理單</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Suggestion", "Patient", new { id = Model.Patient.Id })">診療建議單</a>
+        </li>
+    </ul>
+</div>
+
+<div class="form-group">
+    @if (Model.IsFinishFirstTime)
+    {
+        <div class="panel panel-collapse">
+            <div class="panel-heading">
+                <span class="panel-title">建立療程紀錄</span>
+                <div class="panel-heading-controls">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreatePatientRecord" href="@Url.Action("CreatePatientRecord", "PatientRecord" , new { id=Model.Patient.Id })"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+            <div id="patientRecordPanels" class="panel-body">
+                @for (int i = 0; i < Model.PatientRecordUnits.Count; i++)
+                {
+                    <div class="panel" id="patientRecord@(Model.PatientRecordUnits[i].Id)">
+                        <div class="panel-heading">
+                            <a class="accordion-toggle @(!i.Equals(0) ? "collapsed" : "")" data-toggle="collapse" data-parent="#patientRecordPanels" href="#collapse@(i)">
+                                建立日期 @Model.PatientRecordUnits[i].CreateTime.ToString("yyyy/MM/dd HH:mm")
+                            </a>
+                        </div> <!-- / .panel-heading -->
+                        <div id="collapse@(i)" class="panel-collapse @(i.Equals(0) ? "in" : "collapse")">
+                            <div class="panel-body">
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <label><b>診間：</b></label>
+                                            <label class="text-primary">@Model.PatientRecordUnits[i].Room</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label><b>看診醫師：</b></label>
+                                            <label class="text-primary">@Model.PatientRecordUnits[i].UserName</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a class="btn btn-default col-md-offset-8" href="@Url.Action("EditPatientRecord", "PatientRecord" , new { patientId = Model.Patient.Id , patientRecordId = Model.PatientRecordUnits[i].Id })"><i class="fa fa-edit"></i></a>
+                                            <button id="@(Model.PatientRecordUnits[i].Id)" class="btn btn-danger removePatientRecord" type="button"><i class="fa fa-trash-o"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <label>預約時間：</label>
+                                            <label class="text-primary">
+                                                @(checkTime(Model.PatientRecordUnits[i].OrderTime) ? ((DateTime)Model.PatientRecordUnits[i].OrderTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>病患抵達：</label>
+                                            <label class="text-primary">
+                                                @(checkTime(Model.PatientRecordUnits[i].ArriveTime) ? ((DateTime)Model.PatientRecordUnits[i].ArriveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>起始看診：</label>
+                                            <label class="text-primary">
+                                                @(checkTime(Model.PatientRecordUnits[i].DrArriveTime) ? ((DateTime)Model.PatientRecordUnits[i].DrArriveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>結束看診：</label>
+                                            <label class="text-primary">
+                                                @(checkTime(Model.PatientRecordUnits[i].DrLeaveTime) ? ((DateTime)Model.PatientRecordUnits[i].DrLeaveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>病患離開：</label>
+                                            <label class="text-primary">
+                                                @(checkTime(Model.PatientRecordUnits[i].PtLeaveTime) ? ((DateTime)Model.PatientRecordUnits[i].PtLeaveTime).ToString("yyyy/MM/dd HH:mm") : string.Empty)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <table class="table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>今日療程</th>
+                                                <th>下次療程</th>
+                                                <th>助理</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="col-md-5">
+                                                    @for (int j = 0; j < Model.PatientRecordUnits[i].FdiUnitsF.Count; j++)
+                                                    {
+                                                        <div id="@Model.PatientRecordUnits[i].FdiUnitsF[j].Fdi.Id" class="fdiArea">
+                                                            <div class="form-group col-md-12">
+                                                                <hr />
+                                                            </div>
+                                                            <div class="form-group col-md-12" @(Model.PatientRecordUnits[i].FdiUnitsF[j].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                                                <table class="table">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area1 = Model.PatientRecordUnits[i].FdiUnitsF[j].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                                    string area1string = string.Empty;
+                                                                                    foreach (FdiDetails f in area1)
+                                                                                    {
+                                                                                        area1string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area1string</label>
+                                                                                }
+                                                                            </td>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area2 = Model.PatientRecordUnits[i].FdiUnitsF[j].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                                                    string area2string = string.Empty;
+                                                                                    foreach (FdiDetails f in area2)
+                                                                                    {
+                                                                                        area2string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area2string</label>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area4 = Model.PatientRecordUnits[i].FdiUnitsF[j].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                                    string area4string = string.Empty;
+                                                                                    foreach (FdiDetails f in area4)
+                                                                                    {
+                                                                                        area4string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area4string</label>
+                                                                                }
+                                                                            </td>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area3 = Model.PatientRecordUnits[i].FdiUnitsF[j].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                                                    string area3string = string.Empty;
+                                                                                    foreach (FdiDetails f in area3)
+                                                                                    {
+                                                                                        area3string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area3string</label>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="form-group col-md-12">
+                                                                @Html.TextAreaFor(m => m.PatientRecordUnits[i].FdiUnitsF[j].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td class="col-md-5">
+                                                    @for (int j = 0; j < Model.PatientRecordUnits[i].FdiUnitsN.Count; j++)
+                                                    {
+                                                        <div id="@Model.PatientRecordUnits[i].FdiUnitsN[j].Fdi.Id" class="fdiArea">
+                                                            <div class="form-group col-md-12">
+                                                                <hr />
+                                                            </div>
+                                                            <div class="form-group col-md-12" @(Model.PatientRecordUnits[i].FdiUnitsN[j].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                                                <table class="table">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area1 = Model.PatientRecordUnits[i].FdiUnitsN[j].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                                    string area1string = string.Empty;
+                                                                                    foreach (FdiDetails f in area1)
+                                                                                    {
+                                                                                        area1string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area1string</label>
+                                                                                }
+                                                                            </td>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area2 = Model.PatientRecordUnits[i].FdiUnitsN[j].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                                                    string area2string = string.Empty;
+                                                                                    foreach (FdiDetails f in area2)
+                                                                                    {
+                                                                                        area2string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area2string</label>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area4 = Model.PatientRecordUnits[i].FdiUnitsN[j].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                                    string area4string = string.Empty;
+                                                                                    foreach (FdiDetails f in area4)
+                                                                                    {
+                                                                                        area4string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area4string</label>
+                                                                                }
+                                                                            </td>
+                                                                            <td style="width:50%;">
+                                                                                @{
+                                                                                    var area3 = Model.PatientRecordUnits[i].FdiUnitsN[j].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                                                    string area3string = string.Empty;
+                                                                                    foreach (FdiDetails f in area3)
+                                                                                    {
+                                                                                        area3string += f.FdiPosition;
+                                                                                    }
+                                                                                    <label class="text-primary">@area3string</label>
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="form-group col-md-12">
+                                                                @Html.TextAreaFor(m => m.PatientRecordUnits[i].FdiUnitsN[j].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td class="col-md-2">
+                                                    @for (int j = 0; j < Model.PatientRecordUnits[i].RecordUserUnit.Count; j++)
+                                                    {
+                                                        <div id="@Model.PatientRecordUnits[i].RecordUserUnit[j].Id" class="form-group userArea">
+                                                            <div class="form-group col-md-12">
+                                                                <hr />
+                                                            </div>
+                                                            <label class="text-primary">@Model.PatientRecordUnits[i].RecordUserUnit[j].UserName</label>
+                                                        </div>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- / .panel-body -->
+                        </div> <!-- / .collapse -->
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <h3>此病患尚未有初診紀錄單紀錄</h3>
+    }
+</div>
+
+
+
+<div id="CreatePatientRecord" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<script>
+    // When the user scrolls the page, execute myFunction
+    window.onscroll = function () { myFunction() };
+
+    // Get the header
+    var header = document.getElementById("myHeader");
+
+    // Get the offset position of the navbar
+    var sticky = header.offsetTop;
+
+    function myFunction() {
+        if (window.pageYOffset > sticky) {
+            header.classList.remove("navbar-fixed-top2");
+            header.classList.add("navbar-fixed-top");
+        } else {
+            header.classList.remove("navbar-fixed-top");
+            header.classList.add("navbar-fixed-top2");
+        }
+    }
+</script>
+<script>
+    $("#CreatePatientRecord").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+    });
+</script>
+<script>
+    $('.removePatientRecord').click(function () {
+        var btnRemovePatientRecord = $(this);
+        var patientRecordId = btnRemovePatientRecord.attr('id');
+        var removeTarget = $('#patientRecord' + patientRecordId);
+        $.confirm({
+            title: '提示',
+            content: '<p>是否刪除此病患紀錄？</p>',
+            buttons: {
+                cancel: {
+                    text: '取消',
+                    action: function () {
+                    }
+                },
+                confirm: {
+                    text: '確定',
+                    btnClass: 'btn btn-danger delete',
+                    action: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/PatientRecord/RemovePatientRecord',
+                            data: { patientRecordId: patientRecordId },
+                            success: function (result) {
+                                if (result) {
+                                    if (result.status) {
+                                        removeTarget.remove();
+                                    }
+                                    else {
+                                        alert(result.message);
+                                    }
+                                }
+                                else {
+                                    alert('沒有回應');
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+</script>
