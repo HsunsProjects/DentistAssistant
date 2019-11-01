@@ -208,6 +208,7 @@ namespace DentistAssistant.Controllers
                             patientRecordSuggestUnit.UserName = users.Where(c => c.UserNo.Equals(patientRecords.UserNo)).FirstOrDefault().UserName;
                             patientRecordSuggestUnit.CreateTime = patientRecords.CreateTime;
                             patientRecordSuggestUnit.PatientSettingId = id;
+                            patientRecordSuggestUnit.FdiUnitsS = new List<FdiUnit>();
                         }
                         else
                         {
