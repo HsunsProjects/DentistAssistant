@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DentistAssistant.Extensions;
 using DentistAssistant.Models;
 using DentistAssistant.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace DentistAssistant.Controllers
                 var patient = def.Patients.Where(c => c.Id.ToUpper().Equals(id.ToUpper())).FirstOrDefault();
                 CreatePatientRecordViewModel createPatientRecordViewModel = new CreatePatientRecordViewModel()
                 {
-                    Users = (from u in def.Users
+                    Users = (from u in UsersInfo.Users
                              select new SelectListItem()
                              {
                                  Text = u.UserName,
@@ -59,7 +60,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
                     PatientRecordUnit patientRecordUnit = (from pr in daef.PatientRecords

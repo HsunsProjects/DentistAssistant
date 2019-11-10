@@ -23,7 +23,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
                     var patient = (from p in def.Patients
@@ -200,7 +200,7 @@ namespace DentistAssistant.Controllers
                                    where p.Id.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault();
-                    var users = def.Users.ToList();
+                    var users = UsersInfo.Users;
                     //Share
                     var patientSettings = daef.PatientSettings.Find(id);
                     var share = new Share()
@@ -246,7 +246,7 @@ namespace DentistAssistant.Controllers
             {
                 var UserNo = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var UserName = HttpContext.User.FindFirst("DisplayName").Value;
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 CreateShare createShare = new CreateShare()
                 {
                     PatId = patId,

@@ -10,7 +10,7 @@
 
 <style rel="stylesheet" type="text/css">
     .table {
-        table-layout: fixed;
+        /*table-layout: fixed;*/
         border-collapse: collapse;
     }
 
@@ -114,7 +114,7 @@
                                 <div class="form-group col-md-12">
                                     <hr />
                                 </div>
-                                <div class="form-group col-md-12" @(Model.PatientRecordSuggestUnit.FdiUnitsS[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                <div class="form-group col-md-12" @(Model.PatientRecordSuggestUnit.FdiUnitsS[i].FdiDetails.Count > 0 ? "" : "style=visibility:hidden")>
                                     <table class="table">
                                         <tbody>
                                             <tr>
@@ -172,7 +172,7 @@
                         </td>
                         <td class="col-md-4">
                             <div class="form-group col-md-12">
-                                @Html.TextAreaFor(m => m.PatientRecordSuggestUnit.FdiUnitsS[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                @Html.TextAreaFor(m => m.PatientRecordSuggestUnit.FdiUnitsS[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%;", rows = "3", disabled = "disabled" })
                             </div>
                         </td>
                         <td class="col-md-1">
@@ -182,8 +182,8 @@
                         <td class="col-md-1">
                         </td>
                         <td class="col-md-1">
-                            <button class="btn btn-default col-md-6" type="button" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordSuggestUnit.Id, fdiId = Model.PatientRecordSuggestUnit.FdiUnitsS[i].Fdi.Id, type = "S" })"><i class="fa fa-edit"></i></button>
-                            <button class="btn btn-danger col-md-6 fdiremove" type="button"><i class="fa fa-trash-o"></i></button>
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#FdiDescription" href="@Url.Action("FdiDescription", "EditFirstTimeModal", new { patientRecordId = Model.PatientRecordSuggestUnit.Id, fdiId = Model.PatientRecordSuggestUnit.FdiUnitsS[i].Fdi.Id, type = "S" })"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger fdiremove" type="button"><i class="fa fa-trash-o"></i></button>
                         </td>
                     </tr>
                 }
@@ -274,6 +274,11 @@ else
     }
 </script>
 <script>
+
+    $("#FdiDescription").on('hidden.bs.modal', function () {
+        $(this).data('bs.modal', null);
+    });
+
     $(document).on('click', '.fdiremove', function () {
         var $fdiTr = $(this).closest('tr');
         var id = $fdiTr.find('.fdiArea').attr('id');

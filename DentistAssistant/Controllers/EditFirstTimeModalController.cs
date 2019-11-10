@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DentistAssistant.Extensions;
 using DentistAssistant.Models;
 using DentistAssistant.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +53,7 @@ namespace DentistAssistant.Controllers
                 AssistantListViewModel assistantListViewModel = new AssistantListViewModel()
                 {
                     PatientRecordId = patientRecordId,
-                    Users = (from u in def.Users
+                    Users = (from u in UsersInfo.Users
                              select new SelectListItem()
                              {
                                  Text = u.UserName,

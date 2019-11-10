@@ -25,9 +25,14 @@ namespace DentistAssistant.Controllers
 
             using (var def = new DoctorContext())
             {
+                var loadUsers = (from u in def.Users
+                                 where u.LeaveDate >= DateTime.Now ||
+                                 u.LeaveDate.Equals(DateTime.Parse("1900-01-01"))
+                                 select u).ToList();
+                UsersInfo.SetUsers(loadUsers);
                 var users = new LoginIndexViewModel()
                 {
-                    Users = (from u in def.Users
+                    Users = (from u in UsersInfo.Users
                              select new SelectListItem()
                              {
                                  Text = u.UserName,
@@ -50,7 +55,10 @@ namespace DentistAssistant.Controllers
             {
                 if (loginIndexViewModel.UserNo != null)
                 {
-                    var user = await def.Users.FindAsync(loginIndexViewModel.UserNo);
+                    //var user = await def.Users.FindAsync(loginIndexViewModel.UserNo);
+                    var user = (from u in UsersInfo.Users
+                                where u.UserNo.Equals(loginIndexViewModel.UserNo)
+                                select u).FirstOrDefault();
                     string inputPassword = string.IsNullOrEmpty(loginIndexViewModel.Password) ? string.Empty : loginIndexViewModel.Password;
                     string dbPassword = string.IsNullOrEmpty(user.Pass) ? string.Empty : user.Pass;
                     if (inputPassword.Equals(dbPassword))
@@ -95,7 +103,7 @@ namespace DentistAssistant.Controllers
                 {
                     ModelState.AddModelError("Account", "請選擇帳號");
                 }
-                loginIndexViewModel.Users = (from u in def.Users
+                loginIndexViewModel.Users = (from u in UsersInfo.Users
                                              select new SelectListItem()
                                              {
                                                  Text = u.UserName,

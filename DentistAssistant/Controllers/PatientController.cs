@@ -1,4 +1,5 @@
-﻿using DentistAssistant.Models;
+﻿using DentistAssistant.Extensions;
+using DentistAssistant.Models;
 using DentistAssistant.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,7 +29,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
                     var patient = (from p in def.Patients
@@ -160,7 +161,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
                     SuggestionViewModel suggestionViewModel = new SuggestionViewModel();
@@ -263,7 +264,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var users = def.Users.ToList();
+                var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
                     var Notes = (from qaa in daef.Qaa
@@ -285,6 +286,7 @@ namespace DentistAssistant.Controllers
                                               DrLeaveTime = pr.DrLeaveTime,
                                               PtLeaveTime = pr.PtLeaveTime,
                                               IsFirst = pr.IsFirst,
+                                              IsSuggest = pr.IsSuggest,
                                               CreateTime = pr.CreateTime,
                                               PatientSettingId = pr.PatientSettingId,
                                               FdiUnitsF = (from f in pr.Fdis
@@ -319,7 +321,7 @@ namespace DentistAssistant.Controllers
                                    select p).FirstOrDefault(),
                         Notes = Notes == null ? null : Notes.ValueDescription,
                         IsFinishFirstTime = patientRecords.Where(c => c.IsFirst.Equals(true)).Count() > 0 ? true : false,
-                        PatientRecordUnits = patientRecords.Where(c => c.IsFirst.Equals(false)).ToList()
+                        PatientRecordUnits = patientRecords.Where(c => c.IsFirst.Equals(false) && c.IsSuggest.Equals(false)).ToList()
                     };
                     return View(assistantViewModel);
                 }
@@ -336,6 +338,7 @@ namespace DentistAssistant.Controllers
                 {
                     patients = (from p in def.Patients
                                where (p.PatName.ToLower().Contains(searchString.ToLower()) ||
+                               ((((DateTime)p.Birth).Year -1911).ToString().PadLeft(3, '0') + ((DateTime)p.Birth).Month.ToString().PadLeft(2, '0') + ((DateTime)p.Birth).Day.ToString().PadLeft(2, '0')).Contains(searchString) ||
                                p.Id.ToLower().Contains(searchString.ToLower()) ||
                                p.PatNo.ToLower().Contains(searchString.ToLower())) &&
                                     p.Enable.Equals(true)
@@ -363,7 +366,7 @@ namespace DentistAssistant.Controllers
                     ShareViewModel shareViewModel = new ShareViewModel();
                     if (!string.IsNullOrEmpty(patId))
                     {
-                        var users = def.Users.ToList();
+                        var users = UsersInfo.Users;
                         var patientSettings = daef.PatientSettings.Find(patId);
                         var shareType = from st in daef.ShareTypes
                                         select new LastOneShareType()

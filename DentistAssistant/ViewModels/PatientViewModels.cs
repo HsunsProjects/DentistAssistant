@@ -37,6 +37,7 @@ namespace DentistAssistant.ViewModels
         public DateTime? DrLeaveTime { get; set; }
         public DateTime? PtLeaveTime { get; set; }
         public bool IsFirst { get; set; }
+        public bool IsSuggest { get; set; }
         public DateTime CreateTime { get; set; }
         public string PatientSettingId { get; set; }
         public List<FdiUnit> FdiUnitsF { get; set; }
