@@ -337,15 +337,28 @@ namespace DentistAssistant.Controllers
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     patients = (from p in def.Patients
-                               where (p.PatName.ToLower().Contains(searchString.ToLower()) ||
-                               ((((DateTime)p.Birth).Year -1911).ToString().PadLeft(3, '0') + ((DateTime)p.Birth).Month.ToString().PadLeft(2, '0') + ((DateTime)p.Birth).Day.ToString().PadLeft(2, '0')).Contains(searchString) ||
-                               p.Id.ToLower().Contains(searchString.ToLower()) ||
-                               p.PatNo.ToLower().Contains(searchString.ToLower())) &&
-                                    p.Enable.Equals(true)
-                               select p).ToList();
+                                where (p.PatName.ToLower().Contains(searchString.ToLower()) ||
+                                TransBirth((DateTime)p.Birth).Contains(searchString) ||
+                                (string.IsNullOrEmpty(p.Id) ? false : p.Id.ToLower().Contains(searchString.ToLower())) ||
+                                p.PatNo.ToLower().Contains(searchString.ToLower())) &&
+                                     p.Enable.Equals(true)
+                                select p).ToList();
                 }
                 return View(patients);
             }
+        }
+
+        private string TransBirth(DateTime birth)
+        {
+            string newBirth = "0000000";
+            DateTime parseBirth;
+            if (DateTime.TryParse(birth.ToString(), out parseBirth))
+            {
+                newBirth = (parseBirth.Year - 1911).ToString().PadLeft(3, '0') + parseBirth.Month.ToString().PadLeft(2, '0') + parseBirth.Day.ToString().PadLeft(2, '0');
+            }
+
+
+            return newBirth;
         }
 
         [HttpGet]

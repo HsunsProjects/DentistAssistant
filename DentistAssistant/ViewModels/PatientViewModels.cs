@@ -103,4 +103,9 @@ namespace DentistAssistant.ViewModels
         public string SuggestionNote { get; set; }
         public PatientRecordSuggestUnit PatientRecordSuggestUnit { get; set; }
     }
+
+    public class PatientUnit
+    {
+        public string Birth { get; set; }
+    }
 }
