@@ -10,7 +10,7 @@ namespace DentistAssistant.ViewModels
     public class CreatePatientRecordViewModel
     {
         public IEnumerable<SelectListItem> Users { get; set; }
-        public string PatientId { get; set; }
+        public string PatientNo { get; set; }
         public PatientRecords patientRecord { get; set; }
     }
 }

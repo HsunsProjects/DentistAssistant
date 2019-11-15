@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-md-12">
                         @Html.DropDownListFor(m => m.patientRecord.UserNo, Model.Users, "選擇醫師", new { @class = "form-control", id = "firstTimeDoc" })
-                        @Html.HiddenFor(m => m.PatientId)
+                        @Html.HiddenFor(m => m.PatientNo)
                         @Html.HiddenFor(m => m.FirstTime)
                     </div>
                 </div>

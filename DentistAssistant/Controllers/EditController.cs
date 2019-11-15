@@ -27,10 +27,10 @@ namespace DentistAssistant.Controllers
                 using (var daef = new DentistAssistantContext())
                 {
                     var patient = (from p in def.Patients
-                                   where p.Id.ToLower().Equals(id.ToLower()) &&
+                                   where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault();
-                    var patientSetting = daef.PatientSettings.Find(patient.Id);
+                    var patientSetting = daef.PatientSettings.Find(patient.PatNo);
                     var patientRecord = new PatientRecordViewModel()
                     {
                         Patient = patient,
@@ -133,7 +133,7 @@ namespace DentistAssistant.Controllers
                     {
                         qaas.Add(new Qaa()
                         {
-                            PatientId = patientRecordViewModel.Patient.Id,
+                            PatientId = patientRecordViewModel.Patient.PatNo,
                             Qaqid = qaqp.QAQUnit.Id,
                             ValueDescription = qaqp.QAQUnit.QAAValueDescription
                         });
@@ -148,7 +148,7 @@ namespace DentistAssistant.Controllers
                                 {
                                     qaas.Add(new Qaa()
                                     {
-                                        PatientId = patientRecordViewModel.Patient.Id,
+                                        PatientId = patientRecordViewModel.Patient.PatNo,
                                         Qaqid = qaq.Id,
                                         ValueDescription = qaq.QAAValueDescription
                                     });
@@ -159,7 +159,7 @@ namespace DentistAssistant.Controllers
                 }
 
                 var qaa = from a in daef.Qaa
-                          where a.PatientId.Equals(patientRecordViewModel.Patient.Id)
+                          where a.PatientId.Equals(patientRecordViewModel.Patient.PatNo)
                           select a;
                 //移除所有原有的選項
                 daef.Qaa.RemoveRange(qaa);
@@ -167,7 +167,7 @@ namespace DentistAssistant.Controllers
                 daef.Qaa.AddRange(qaas);
 
 
-                var patientSetting = daef.PatientSettings.Find(patientRecordViewModel.Patient.Id);
+                var patientSetting = daef.PatientSettings.Find(patientRecordViewModel.Patient.PatNo);
                 if (patientSetting != null)
                 {
                     patientSetting.Introduce = patientRecordViewModel.Introduce;
@@ -177,7 +177,7 @@ namespace DentistAssistant.Controllers
                 {
                     daef.PatientSettings.Add(new PatientSettings()
                     {
-                        Id = patientRecordViewModel.Patient.Id,
+                        Id = patientRecordViewModel.Patient.PatNo,
                         Introduce = patientRecordViewModel.Introduce,
                         QadoctorNo = patientRecordViewModel.QADoctor
                     });
@@ -185,7 +185,7 @@ namespace DentistAssistant.Controllers
 
                 daef.SaveChanges();
 
-                return RedirectToAction("Record", "Patient", new { id = patientRecordViewModel.Patient.Id });
+                return RedirectToAction("Record", "Patient", new { id = patientRecordViewModel.Patient.PatNo });
             }
         }
 
@@ -197,7 +197,7 @@ namespace DentistAssistant.Controllers
                 using (var daef = new DentistAssistantContext())
                 {
                     var patient = (from p in def.Patients
-                                   where p.Id.ToLower().Equals(id.ToLower()) &&
+                                   where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault();
                     var users = UsersInfo.Users;
@@ -218,7 +218,7 @@ namespace DentistAssistant.Controllers
                         IsCheckedVideos = patientSettings != null ? patientSettings.IsShareVideo : false,
                         Shares = (from s in daef.Shares
                                   where s.ShareTypeId.ToLower().Trim().Equals(shareTypeId.ToLower().Trim()) &&
-                                  s.PatId.Equals(patient.Id) &&
+                                  s.PatId.Equals(patient.PatNo) &&
                                   s.IsEnable.Equals(true)
                                   orderby s.CreateDate descending
                                   select new ShareEditUnit()

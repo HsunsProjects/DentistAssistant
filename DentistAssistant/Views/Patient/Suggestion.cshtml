@@ -73,10 +73,10 @@
     <h1>診療建議單</h1>
     <ul class="nav nav-tabs">
         <li>
-            <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.Id })">牙醫療程紀錄單</a>
+            <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.PatNo })">牙醫療程紀錄單</a>
         </li>
         <li>
-            <a href="@Url.Action("Assistant", "Patient", new { id = Model.Patient.Id })">療程助理單</a>
+            <a href="@Url.Action("Assistant", "Patient", new { id = Model.Patient.PatNo })">療程助理單</a>
         </li>
         <li class="active">
             <a href="#" data-toggle="tab">診療建議單</a>
@@ -320,7 +320,7 @@ else
     });
     
     $('#saveSuggestionNote').click(function () {
-        var patientId = '@Model.Patient.Id';
+        var patientId = '@Model.Patient.PatNo';
         var suggestionNote = $('#suggestionNote').val();
 
         $.ajax({

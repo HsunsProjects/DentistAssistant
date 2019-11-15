@@ -17,7 +17,7 @@ namespace DentistAssistant.Controllers
             using (var def = new DoctorContext())
             {
                 var patient = (from p in def.Patients
-                               where p.Id.ToLower().Equals(id.ToLower()) &&
+                               where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                      p.Enable.Equals(true)
                                select p).FirstOrDefault();
                 return View(patient);
@@ -33,11 +33,11 @@ namespace DentistAssistant.Controllers
                 using (var daef = new DentistAssistantContext())
                 {
                     var patient = (from p in def.Patients
-                                   where p.Id.ToLower().Equals(id.ToLower()) &&
+                                   where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault();
                     var patientSettingFirstTimeRecord = (from ps in daef.PatientSettings
-                                                         where ps.Id.ToUpper().Equals(patient.Id.ToUpper())
+                                                         where ps.Id.ToUpper().Equals(patient.PatNo.ToUpper())
                                                          select new PatientSettingRecordViewModel()
                                                          {
                                                              PatientSetting = ps,
@@ -134,7 +134,7 @@ namespace DentistAssistant.Controllers
                                        }).ToList(),
                     };
                     //patientRecord.ShareViewModel = GetShareImage(patient.Id);
-                    patientRecord.ShareViewModel = GetShare(patient.Id);
+                    patientRecord.ShareViewModel = GetShare(patient.PatNo);
 
                     if(patientSettingFirstTimeRecord != null)
                     {
@@ -166,12 +166,12 @@ namespace DentistAssistant.Controllers
                 {
                     SuggestionViewModel suggestionViewModel = new SuggestionViewModel();
                     suggestionViewModel.Patient = (from p in def.Patients
-                                                   where p.Id.ToLower().Equals(id.ToLower()) &&
+                                                   where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                                          p.Enable.Equals(true)
                                                    select p).FirstOrDefault();
 
                     PatientRecordSuggestUnit patientRecordSuggestUnit = new PatientRecordSuggestUnit();
-                    var patientSetting = daef.PatientSettings.Find(suggestionViewModel.Patient.Id);
+                    var patientSetting = daef.PatientSettings.Find(suggestionViewModel.Patient.PatNo);
                     if (patientSetting != null)
                     {
                         ViewBag.NoPatientSetting = false;
@@ -316,7 +316,7 @@ namespace DentistAssistant.Controllers
                     AssistantViewModel assistantViewModel = new AssistantViewModel()
                     {
                         Patient = (from p in def.Patients
-                                   where p.Id.ToLower().Equals(id.ToLower()) &&
+                                   where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault(),
                         Notes = Notes == null ? null : Notes.ValueDescription,

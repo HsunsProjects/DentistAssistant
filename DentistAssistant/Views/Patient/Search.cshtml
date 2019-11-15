@@ -29,7 +29,7 @@
                 <td>@(m.Birth.ToString("yyyy-MM-dd"))</td>
                 <td>@m.TelH</td>
                 <td>@m.Moble1</td>
-                <td><a href="@Url.Action("Record", "Patient", new { id = @m.Id })" class="btn btn-info">選擇</a></td>
+                <td><a href="@Url.Action("Record", "Patient", new { id = @m.PatNo })" class="btn btn-info">選擇</a></td>
             </tr>
         }
     </tbody>

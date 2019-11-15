@@ -21,7 +21,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var patient = def.Patients.Where(c => c.Id.ToUpper().Equals(id.ToUpper())).FirstOrDefault();
+                var patient = def.Patients.Where(c => c.PatNo.ToUpper().Equals(id.ToUpper())).FirstOrDefault();
                 CreatePatientRecordViewModel createPatientRecordViewModel = new CreatePatientRecordViewModel()
                 {
                     Users = (from u in UsersInfo.Users
@@ -31,7 +31,7 @@ namespace DentistAssistant.Controllers
                                  Value = u.UserNo,
                                  Selected = false
                              }).ToList(),
-                    PatientId = patient.Id
+                    PatientNo = patient.PatNo
                 };
                 return View(createPatientRecordViewModel);
             }
@@ -46,11 +46,11 @@ namespace DentistAssistant.Controllers
                 using (var daef = new DentistAssistantContext())
                 {
                     DateTime createTime = DateTime.Now;
-                    var patientSettings = daef.PatientSettings.Find(createPatientRecordViewModel.PatientId);
+                    var patientSettings = daef.PatientSettings.Find(createPatientRecordViewModel.PatientNo);
                     createPatientRecordViewModel.patientRecord.CreateTime = createTime;
                     patientSettings.PatientRecords.Add(createPatientRecordViewModel.patientRecord);
                     daef.SaveChanges();
-                    return RedirectToAction("Assistant", "Patient", new { id = createPatientRecordViewModel.PatientId });
+                    return RedirectToAction("Assistant", "Patient", new { id = createPatientRecordViewModel.PatientNo });
                 }
             }
         }

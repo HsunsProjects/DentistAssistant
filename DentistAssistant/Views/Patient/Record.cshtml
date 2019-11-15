@@ -86,10 +86,10 @@
             <a href="#" data-toggle="tab">牙醫療程紀錄單</a>
         </li>
         <li>
-            <a href="@Url.Action("Assistant", "Patient" , new { id=Model.Patient.Id })">療程助理單</a>
+            <a href="@Url.Action("Assistant", "Patient" , new { id=Model.Patient.PatNo })">療程助理單</a>
         </li>
         <li>
-            <a href="@Url.Action("Suggestion", "Patient" , new { id=Model.Patient.Id })">診療建議單</a>
+            <a href="@Url.Action("Suggestion", "Patient" , new { id=Model.Patient.PatNo })">診療建議單</a>
         </li>
     </ul>
 
@@ -97,7 +97,7 @@
         <div class="panel-heading">
             <span class="panel-title">　</span>
             <div class="panel-heading-controls">
-                <button type="button" class="btn btn-outline" data-toggle="modal" data-target="#EditQA" href="@Url.Action("QA", "Edit" , new { id=Model.Patient.Id })"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn-outline" data-toggle="modal" data-target="#EditQA" href="@Url.Action("QA", "Edit" , new { id=Model.Patient.PatNo })"><i class="fa fa-edit"></i></button>
             </div>
         </div>
         <div class="panel-body">
@@ -182,7 +182,7 @@
                 <span class="lbl">照片</span>
                 @Html.CheckBoxFor(m => m.ShareViewModel.IsCheckedVideos, new { @class = "DisplayShareVideo", @disabled = "disabled" })
                 <span class="lbl">影像</span>
-                <button type="button" class="btn col-md-1 pull-right" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Setting" })"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn col-md-1 pull-right" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "Setting" })"><i class="fa fa-edit"></i></button>
 
             </div>
 
@@ -216,7 +216,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PanoB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "PanoB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -246,7 +246,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PanoA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "PanoA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -280,7 +280,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "UCTB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "UCTB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -310,7 +310,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "UCTA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "UCTA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -344,7 +344,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "LCTB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "LCTB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -374,7 +374,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "LCTA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "LCTA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -408,7 +408,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MouseInB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "MouseInB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -438,7 +438,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MouseInA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "MouseInA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -472,7 +472,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "HeadTopB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "HeadTopB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -502,7 +502,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "HeadTopA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "HeadTopA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -536,7 +536,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "NineB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "NineB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -566,7 +566,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "NineA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "NineA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -600,7 +600,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "BlackB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "BlackB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -630,7 +630,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "BlackA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "BlackA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -664,7 +664,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "WhiteB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "WhiteB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -694,7 +694,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "WhiteA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "WhiteA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -728,7 +728,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MirrorB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "MirrorB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -758,7 +758,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "MirrorA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "MirrorA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -792,7 +792,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ScanB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "ScanB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -822,7 +822,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ScanA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "ScanA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -856,7 +856,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ReferenceModelB" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "ReferenceModelB" })"><i class="fa fa-edit"></i></button>
                     </div>
                     <div>
                         <hr />
@@ -886,7 +886,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "ReferenceModelA" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "ReferenceModelA" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -917,7 +917,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "PREP" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "PREP" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -958,8 +958,8 @@
                             </div>*@
                         <div class="col-md-3">
                             <div class="form-group col-md-12">
-                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "SizeU" })"><i class="fa fa-plus"></i></button>
-                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "SizeU" })"><i class="fa fa-edit"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.PatNo, shareTypeId = "SizeU" })"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "SizeU" })"><i class="fa fa-edit"></i></button>
                             </div>
                         </div>
                     </div>
@@ -998,8 +998,8 @@
                             </div>*@
                         <div class="col-md-3">
                             <div class="form-group col-md-12">
-                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "SizeD" })"><i class="fa fa-plus"></i></button>
-                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "SizeD" })"><i class="fa fa-edit"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.PatNo, shareTypeId = "SizeD" })"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "SizeD" })"><i class="fa fa-edit"></i></button>
                             </div>
                         </div>
                     </div>
@@ -1032,7 +1032,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Print" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "Print" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -1063,7 +1063,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Take" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "Take" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -1094,7 +1094,7 @@
                             }
                         </div>
                         <button type="button" class="btn btn-outline col-md-6 addShareType"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Wax" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "Wax" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -1124,8 +1124,8 @@
                                 </label>
                             }
                         </div>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.Id, shareTypeId = "Sticker" })"><i class="fa fa-plus"></i></button>
-                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.Id, shareTypeId = "Sticker" })"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#CreateShare" href="@Url.Action("CreateShare", "Edit" , new { patId = Model.Patient.PatNo, shareTypeId = "Sticker" })"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-outline col-md-6" data-toggle="modal" data-target="#EditShare" href="@Url.Action("Share", "Edit" , new { id = Model.Patient.PatNo, shareTypeId = "Sticker" })"><i class="fa fa-edit"></i></button>
                     </div>
                 </div>
             </div>
@@ -1137,7 +1137,7 @@
             <div class="panel-heading">
                 <span class="panel-title">初診日期 </span>
                 <div class="panel-heading-controls">
-                    <a class="btn btn-default" href="@Url.Action("EditFirstTime", "FirstTime" , new { patId = Model.Patient.Id })"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-default" href="@Url.Action("EditFirstTime", "FirstTime" , new { patId = Model.Patient.PatNo })"><i class="fa fa-edit"></i></a>
                 </div>
             </div>
             <div class="panel-body">
@@ -1351,7 +1351,7 @@
     else
     {
         <div class="form-group">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreateFirstTime" href="@Url.Action("CreateFirstTime", "FirstTime" , new { id=Model.Patient.Id })">建立初診詢問單</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreateFirstTime" href="@Url.Action("CreateFirstTime", "FirstTime" , new { id=Model.Patient.PatNo })">建立初診詢問單</button>
         </div>
     }
 </div>
@@ -1419,7 +1419,7 @@
         $.ajax({
         type: 'POST',
             url: '/Edit/AddShareType',
-            data: { patId : '@(Model.Patient.Id)', shareTypeId: shareTypeId },
+            data: { patId : '@(Model.Patient.PatNo)', shareTypeId: shareTypeId },
             success: function (result) {
                 if (result) {
                     if (result.status) {

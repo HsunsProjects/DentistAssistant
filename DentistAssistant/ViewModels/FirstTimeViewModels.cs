@@ -9,7 +9,7 @@ namespace DentistAssistant.ViewModels
     {
         public IEnumerable<SelectListItem> Users { get; set; }
         public DateTime FirstTime { get; set; }
-        public string PatientId { get; set; }
+        public string PatientNo { get; set; }
         public PatientRecords patientRecord { get; set; }
     }
 

@@ -22,7 +22,7 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                var patient = def.Patients.Where(c => c.Id.ToUpper().Equals(id.ToUpper())).FirstOrDefault();
+                var patient = def.Patients.Where(c => c.PatNo.ToUpper().Equals(id.ToUpper())).FirstOrDefault();
                 DateTime createTime = DateTime.Now;
                 CreateFirstTimeViewModel createFirstTimeViewModel = new CreateFirstTimeViewModel()
                 {
@@ -33,7 +33,7 @@ namespace DentistAssistant.Controllers
                                  Value = u.UserNo,
                                  Selected = false
                              }).ToList(),
-                    PatientId = patient.Id,
+                    PatientNo = patient.PatNo,
                     FirstTime = createTime
                 };
                 return View(createFirstTimeViewModel);
@@ -45,12 +45,12 @@ namespace DentistAssistant.Controllers
         {
             using (var daef = new DentistAssistantContext())
             {
-                var ps = daef.PatientSettings.Find(createFirstTimeViewModel.PatientId);
+                var ps = daef.PatientSettings.Find(createFirstTimeViewModel.PatientNo);
                 if (ps == null)
                 {
                     //var patientSettings = daef.PatientSettings.Find(createFirstTimeViewModel.PatientId);
                     PatientSettings patientSettings = new PatientSettings();
-                    patientSettings.Id = createFirstTimeViewModel.PatientId;
+                    patientSettings.Id = createFirstTimeViewModel.PatientNo;
                     patientSettings.FirstTimeTime = createFirstTimeViewModel.FirstTime;
 
                     createFirstTimeViewModel.patientRecord.IsFirst = true;
@@ -66,14 +66,14 @@ namespace DentistAssistant.Controllers
                     pr.IsSuggest = false;
                     pr.CreateTime = createFirstTimeViewModel.FirstTime;
                     pr.UserNo = createFirstTimeViewModel.patientRecord.UserNo;
-                    pr.PatientSettingId = createFirstTimeViewModel.PatientId;
+                    pr.PatientSettingId = createFirstTimeViewModel.PatientNo;
                     pr.Room = createFirstTimeViewModel.patientRecord.Room;
                     ps.FirstTimeTime = createFirstTimeViewModel.FirstTime;
                     ps.PatientRecords.Add(pr);
                     //daef.PatientRecords.Add(pr);
                 }
                 daef.SaveChanges();
-                return RedirectToAction("Record", "Patient", new { id = createFirstTimeViewModel.PatientId });
+                return RedirectToAction("Record", "Patient", new { id = createFirstTimeViewModel.PatientNo });
             }
         }
 

@@ -89,13 +89,13 @@
     <h1>療程助理單</h1>
     <ul class="nav nav-tabs">
         <li>
-            <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.Id })">牙醫療程紀錄單</a>
+            <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.PatNo })">牙醫療程紀錄單</a>
         </li>
         <li class="active">
             <a href="#" data-toggle="tab">療程助理單</a>
         </li>
         <li>
-            <a href="@Url.Action("Suggestion", "Patient", new { id = Model.Patient.Id })">診療建議單</a>
+            <a href="@Url.Action("Suggestion", "Patient", new { id = Model.Patient.PatNo })">診療建議單</a>
         </li>
     </ul>
 </div>
@@ -107,7 +107,7 @@
             <div class="panel-heading">
                 <span class="panel-title">建立療程紀錄</span>
                 <div class="panel-heading-controls">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreatePatientRecord" href="@Url.Action("CreatePatientRecord", "PatientRecord" , new { id=Model.Patient.Id })"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#CreatePatientRecord" href="@Url.Action("CreatePatientRecord", "PatientRecord" , new { id=Model.Patient.PatNo })"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
             <div id="patientRecordPanels" class="panel-body">
@@ -132,7 +132,7 @@
                                             <label class="text-primary">@Model.PatientRecordUnits[i].UserName</label>
                                         </div>
                                         <div class="col-md-4">
-                                            <a class="btn btn-default col-md-offset-8" href="@Url.Action("EditPatientRecord", "PatientRecord" , new { patientId = Model.Patient.Id , patientRecordId = Model.PatientRecordUnits[i].Id })"><i class="fa fa-edit"></i></a>
+                                            <a class="btn btn-default col-md-offset-8" href="@Url.Action("EditPatientRecord", "PatientRecord" , new { patientId = Model.Patient.PatNo , patientRecordId = Model.PatientRecordUnits[i].Id })"><i class="fa fa-edit"></i></a>
                                             <button id="@(Model.PatientRecordUnits[i].Id)" class="btn btn-danger removePatientRecord" type="button"><i class="fa fa-trash-o"></i></button>
                                         </div>
                                     </div>
