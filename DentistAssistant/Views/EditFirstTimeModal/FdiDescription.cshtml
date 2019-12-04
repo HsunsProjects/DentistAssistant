@@ -68,11 +68,11 @@
         <button type="button" class="btn" style="visibility:hidden">0</button>
         <button type="button" class="btn" style="visibility:hidden">0</button>
         <button type="button" class="btn" style="visibility:hidden">0</button>*@
-                                    <button type="button" id="d55" class="btn btn-info fdi" data-toggle="button">5</button>
-                                    <button type="button" id="d54" class="btn btn-info fdi" data-toggle="button">4</button>
-                                    <button type="button" id="d53" class="btn btn-info fdi" data-toggle="button">3</button>
-                                    <button type="button" id="d52" class="btn btn-info fdi" data-toggle="button">2</button>
-                                    <button type="button" id="d51" class="btn btn-info fdi" data-toggle="button">1</button>
+                                    <button type="button" id="d55" class="btn btn-info fdi" data-toggle="button">E</button>
+                                    <button type="button" id="d54" class="btn btn-info fdi" data-toggle="button">D</button>
+                                    <button type="button" id="d53" class="btn btn-info fdi" data-toggle="button">C</button>
+                                    <button type="button" id="d52" class="btn btn-info fdi" data-toggle="button">B</button>
+                                    <button type="button" id="d51" class="btn btn-info fdi" data-toggle="button">A</button>
                                 </div>
                                 <div class="form-group area1">
                                     <button type="button" id="d19" class="btn btn-default fdi" data-toggle="button">9</button>
@@ -88,11 +88,11 @@
                             </td>
                             <td>
                                 <div class="form-group area6">
-                                    <button type="button" id="d61" class="btn btn-info fdi" data-toggle="button">1</button>
-                                    <button type="button" id="d62" class="btn btn-info fdi" data-toggle="button">2</button>
-                                    <button type="button" id="d63" class="btn btn-info fdi" data-toggle="button">3</button>
-                                    <button type="button" id="d64" class="btn btn-info fdi" data-toggle="button">4</button>
-                                    <button type="button" id="d65" class="btn btn-info fdi" data-toggle="button">5</button>
+                                    <button type="button" id="d61" class="btn btn-info fdi" data-toggle="button">A</button>
+                                    <button type="button" id="d62" class="btn btn-info fdi" data-toggle="button">B</button>
+                                    <button type="button" id="d63" class="btn btn-info fdi" data-toggle="button">C</button>
+                                    <button type="button" id="d64" class="btn btn-info fdi" data-toggle="button">D</button>
+                                    <button type="button" id="d65" class="btn btn-info fdi" data-toggle="button">E</button>
                                 </div>
                                 <div class="form-group area2">
                                     <button type="button" id="d21" class="btn btn-warning fdi fm ub ul ua" data-toggle="button">1</button>
@@ -125,11 +125,11 @@
         <button type="button" class="btn" style="visibility:hidden">0</button>
         <button type="button" class="btn" style="visibility:hidden">0</button>
         <button type="button" class="btn" style="visibility:hidden">0</button>*@
-                                    <button type="button" id="d85" class="btn btn-info fdi" data-toggle="button">5</button>
-                                    <button type="button" id="d84" class="btn btn-info fdi" data-toggle="button">4</button>
-                                    <button type="button" id="d83" class="btn btn-info fdi" data-toggle="button">3</button>
-                                    <button type="button" id="d82" class="btn btn-info fdi" data-toggle="button">2</button>
-                                    <button type="button" id="d81" class="btn btn-info fdi" data-toggle="button">1</button>
+                                    <button type="button" id="d85" class="btn btn-info fdi" data-toggle="button">E</button>
+                                    <button type="button" id="d84" class="btn btn-info fdi" data-toggle="button">D</button>
+                                    <button type="button" id="d83" class="btn btn-info fdi" data-toggle="button">C</button>
+                                    <button type="button" id="d82" class="btn btn-info fdi" data-toggle="button">B</button>
+                                    <button type="button" id="d81" class="btn btn-info fdi" data-toggle="button">A</button>
                                 </div>
                             </td>
                             <td>
@@ -145,11 +145,11 @@
                                     <button type="button" id="d39" class="btn btn-default fdi" data-toggle="button">9</button>
                                 </div>
                                 <div class="form-group area7">
-                                    <button type="button" id="d71" class="btn btn-info fdi" data-toggle="button">1</button>
-                                    <button type="button" id="d72" class="btn btn-info fdi" data-toggle="button">2</button>
-                                    <button type="button" id="d73" class="btn btn-info fdi" data-toggle="button">3</button>
-                                    <button type="button" id="d74" class="btn btn-info fdi" data-toggle="button">4</button>
-                                    <button type="button" id="d75" class="btn btn-info fdi" data-toggle="button">5</button>
+                                    <button type="button" id="d71" class="btn btn-info fdi" data-toggle="button">A</button>
+                                    <button type="button" id="d72" class="btn btn-info fdi" data-toggle="button">B</button>
+                                    <button type="button" id="d73" class="btn btn-info fdi" data-toggle="button">C</button>
+                                    <button type="button" id="d74" class="btn btn-info fdi" data-toggle="button">D</button>
+                                    <button type="button" id="d75" class="btn btn-info fdi" data-toggle="button">E</button>
                                 </div>
                             </td>
                         </tr>
@@ -285,17 +285,18 @@
 
         var fdiArray= new Array();
 
-        var touchtime = 0;
-        $(document).on('click', '.insertFdiDesc', function () {
-            if (touchtime == 0) {
-                touchtime = new Date().getTime();
-            } else {
-                if (((new Date().getTime()) - touchtime) < 800) {
-                    $('#fdiDescription').val($('#fdiDescription').val() + this.text);
-                }
-                touchtime = 0;
-            }
-        });
+        //var touchtime = 0;
+        //$(document).on('click', '.insertFdiDesc', function () {
+            //$('#fdiDescription').val($('#fdiDescription').val() + this.text);
+            //if (touchtime == 0) {
+            //    touchtime = new Date().getTime();
+            //} else {
+            //    if (((new Date().getTime()) - touchtime) < 800) {
+            //        $('#fdiDescription').val($('#fdiDescription').val() + this.text);
+            //    }
+            //    touchtime = 0;
+            //}
+        //});
 
         $('.partFdi').click(function () {
             fdiArray.splice(0, fdiArray.length);
