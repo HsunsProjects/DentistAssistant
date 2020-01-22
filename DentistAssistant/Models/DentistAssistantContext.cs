@@ -35,7 +35,6 @@ namespace DentistAssistant.Models
             {
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-39AOD1O\\HSUNSPROJECTS;Database=DentistAssistant;User Id=sa;Password=Eason0811;Trusted_Connection=True;Integrated Security=false;");
-                //optionsBuilder.UseSqlServer("Server=Localhost\\BESTCHOICE;Database=DentistAssistant;User Id=bestchoice;Password=0937093374;Trusted_Connection=True;Integrated Security=false;");
             }
         }
 
@@ -110,7 +109,7 @@ namespace DentistAssistant.Models
 
                 entity.Property(e => e.PatientSettingId)
                     .IsRequired()
-                    .HasMaxLength(10)
+                    .HasMaxLength(14)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PtLeaveTime).HasColumnType("datetime");
@@ -132,9 +131,11 @@ namespace DentistAssistant.Models
             modelBuilder.Entity<PatientSettings>(entity =>
             {
                 entity.Property(e => e.Id)
-                    .HasMaxLength(10)
+                    .HasMaxLength(14)
                     .IsUnicode(false)
                     .ValueGeneratedNever();
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.FirstTimeTime).HasColumnType("datetime");
 
@@ -271,7 +272,7 @@ namespace DentistAssistant.Models
 
                 entity.Property(e => e.PatId)
                     .IsRequired()
-                    .HasMaxLength(10)
+                    .HasMaxLength(14)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ShareTypeId)

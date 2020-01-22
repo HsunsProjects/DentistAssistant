@@ -47,7 +47,7 @@
                                     </div>
                                     break;
                                 case "T":
-                                    @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "form-control text-primary", style = "width:100%", rows = "10" })
+                                    @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { id = "summernote-example", @class = "form-control text-primary", style = "width:100%", rows = "10" })
                                     @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Id)
                                     @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.Type)
                                     @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
@@ -79,7 +79,7 @@
                                             </div>
                                             break;
                                         case "T":
-                                            @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "form-control text-primary", style = "width:100%", rows = "10" })
+                                            @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { id = "summernote-example", @class = "form-control text-primary", style = "width:100%", rows = "10" })
                                             @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Id)
                                             @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].Type)
                                             @Html.HiddenFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
@@ -94,8 +94,41 @@
             <b>醫師確認：</b>
             @Html.DropDownListFor(m => m.QADoctor, Model.QADoctorList, "選擇帳號", new { @class = "form-control" })
         </div>
+
+        @*<textarea class="form-control" id="summernote-example" rows="10"></textarea>*@
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">儲存</button>
         </div>
         @Html.HiddenFor(m => m.Patient.PatNo)
     </form>
+
+
+<!-- Javascript -->
+<script>
+    
+    $(document).ready(function () {
+        if (!$('html').hasClass('ie8')) {
+            $('#summernote-example').summernote({
+                height: 200,
+                tabsize: 2,
+                codemirror: {
+                    theme: 'monokai'
+                }
+            });
+        }
+        //$('#summernote-boxed').switcher({
+        //    on_state_content: '<span class="fa fa-check" style="font-size:11px;"></span>',
+        //    off_state_content: '<span class="fa fa-times" style="font-size:11px;"></span>'
+        //});
+        //$('#summernote-boxed').on($('html').hasClass('ie8') ? "propertychange" : "change", function () {
+        //    var $panel = $(this).parents('.panel');
+        //    if ($(this).is(':checked')) {
+        //        $panel.find('.panel-body').addClass('no-padding');
+        //        $panel.find('.panel-body > *').addClass('no-border');
+        //    } else {
+        //        $panel.find('.panel-body').removeClass('no-padding');
+        //        $panel.find('.panel-body > *').removeClass('no-border');
+        //    }
+        //});
+    });
+</script>

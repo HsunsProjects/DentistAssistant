@@ -151,6 +151,14 @@ namespace DentistAssistant.Controllers
                         }
                     }
 
+                    if (patientSettingFirstTimeRecord.PatientSetting.IsCompleted == null || patientSettingFirstTimeRecord.PatientSetting.IsCompleted.Equals(true))
+                    {
+                        patientRecord.IsComplete =  true;
+                    }
+                    else
+                    {
+                        patientRecord.IsComplete =  false;
+                    }
                     return View(patientRecord);
                 }
             }
@@ -333,18 +341,28 @@ namespace DentistAssistant.Controllers
         {
             using (var def = new DoctorContext())
             {
-                List<Patients> patients = new List<Patients>();
-                if (!string.IsNullOrEmpty(searchString))
+                using (var daef = new DentistAssistantContext())
                 {
-                    patients = (from p in def.Patients
-                                where (p.PatName.ToLower().Contains(searchString.ToLower()) ||
-                                TransBirth((DateTime)p.Birth).Contains(searchString) ||
-                                (string.IsNullOrEmpty(p.Id) ? false : p.Id.ToLower().Contains(searchString.ToLower())) ||
-                                p.PatNo.ToLower().Contains(searchString.ToLower())) &&
-                                     p.Enable.Equals(true)
-                                select p).ToList();
+                    List<PatientCompleteViewModel> patients = new List<PatientCompleteViewModel>();
+                    if (!string.IsNullOrEmpty(searchString))
+                    {
+                        var patientSetting = daef.PatientSettings.ToList();
+                        patients = (from p in def.Patients
+                                    where (p.PatName.ToLower().Contains(searchString.ToLower()) ||
+                                    TransBirth((DateTime)p.Birth).Contains(searchString) ||
+                                    (string.IsNullOrEmpty(p.Id) ? false : p.Id.ToLower().Contains(searchString.ToLower())) ||
+                                    p.PatNo.ToLower().Contains(searchString.ToLower())) &&
+                                         p.Enable.Equals(true)
+                                    select new PatientCompleteViewModel()
+                                    {
+                                        Patient = p,
+                                        PatientSettings = (from ps in patientSetting
+                                                           where ps.Id.Equals(p.PatNo)
+                                                           select ps).FirstOrDefault()
+                                    }).ToList();
+                    }
+                    return View(patients);
                 }
-                return View(patients);
             }
         }
 
@@ -503,6 +521,94 @@ namespace DentistAssistant.Controllers
                         }
                     }
                     return shareViewModel;
+                }
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SetPatientComplete(string patNo)
+        {
+            using (var daef = new DentistAssistantContext())
+            {
+                try
+                {
+                    var patientSetting = daef.PatientSettings.Find(patNo);
+                    if (patientSetting != null)
+                    {
+                        patientSetting.IsCompleted = false;
+                        patientSetting.CreateTime = DateTime.Now;
+                    }
+                    else
+                    {
+                        daef.PatientSettings.Add(new PatientSettings()
+                        {
+                            Id = patNo,
+                            IsShareImage = false,
+                            IsShareVideo = false,
+                            IsCompleted = false,
+                            CreateTime = DateTime.Now
+                        });
+                    }
+
+                    daef.SaveChanges();
+
+                    var jsonResult = new
+                    {
+                        status = true
+                    };
+                    return Json(jsonResult);
+                }
+                catch
+                {
+                    var jsonResultError = new
+                    {
+                        status = false,
+                        message = "系統發生問題"
+                    };
+                    return Json(jsonResultError);
+                }
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SetPatientFinish(string patNo)
+        {
+            using (var daef = new DentistAssistantContext())
+            {
+                try
+                {
+                    var patientSetting = daef.PatientSettings.Find(patNo);
+                    if (patientSetting != null)
+                    {
+                        patientSetting.IsCompleted = true;
+                    }
+                    else
+                    {
+                        daef.PatientSettings.Add(new PatientSettings()
+                        {
+                            Id = patNo,
+                            IsShareImage = false,
+                            IsShareVideo = false,
+                            IsCompleted = true
+                        });
+                    }
+
+                    daef.SaveChanges();
+
+                    var jsonResult = new
+                    {
+                        status = true
+                    };
+                    return Json(jsonResult);
+                }
+                catch
+                {
+                    var jsonResultError = new
+                    {
+                        status = false,
+                        message = "系統發生問題"
+                    };
+                    return Json(jsonResultError);
                 }
             }
         }

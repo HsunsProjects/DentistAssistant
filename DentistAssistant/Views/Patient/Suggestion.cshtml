@@ -70,7 +70,7 @@
     <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
 </div>
 <div style="padding-top:57px">
-    <h1>診療建議單</h1>
+    <h1 style="display:inline">診療建議單</h1>
     <ul class="nav nav-tabs">
         <li>
             <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.PatNo })">牙醫療程紀錄單</a>

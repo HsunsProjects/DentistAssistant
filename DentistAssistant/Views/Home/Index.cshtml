@@ -1,10 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "等待編輯清單";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
-</div>
-<div>
-</div>
+<h1>等待編輯清單</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>病患編號</th>
+            <th>病患名稱</th>
+            <th>身分證號</th>
+            <th>性別</th>
+            <th>生日</th>
+            <th>家用電話</th>
+            <th>手機</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.PatNo</td>
+                <td>@m.PatName</td>
+                <td>@m.Id</td>
+                <td>@m.Sex</td>
+                <td>@(m.Birth == null ? "" : ((DateTime)m.Birth).ToString("yyyy-MM-dd"))</td>
+                <td>@m.TelH</td>
+                <td>@m.Moble1</td>
+                <td>
+                    <a href="@Url.Action("Record", "Patient", new { id = @m.PatNo })" class="btn btn-info ">選擇</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

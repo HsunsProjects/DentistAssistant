@@ -1,9 +1,10 @@
-﻿
+﻿@model List<DentistAssistant.ViewModels.PatientCompleteViewModel>
+
 @{
     ViewData["Title"] = "查詢結果";
 }
 
-<h1>查詢結果</h1>
+<h1 style="display:inline">查詢結果</h1>
 
 <table class="table table-striped">
     <thead>
@@ -22,15 +23,59 @@
         @foreach (var m in Model)
         {
             <tr>
-                <td>@m.PatNo</td>
-                <td>@m.PatName</td>
-                <td>@m.Id</td>
-                <td>@m.Sex</td>
-                <td>@(m.Birth.ToString("yyyy-MM-dd"))</td>
-                <td>@m.TelH</td>
-                <td>@m.Moble1</td>
-                <td><a href="@Url.Action("Record", "Patient", new { id = @m.PatNo })" class="btn btn-info">選擇</a></td>
+                <td>@m.Patient.PatNo</td>
+                <td>@m.Patient.PatName</td>
+                <td>@m.Patient.Id</td>
+                <td>@m.Patient.Sex</td>
+                <td>@(m.Patient.Birth == null ? "" : ((DateTime)m.Patient.Birth).ToString("yyyy-MM-dd"))</td>
+                <td>@m.Patient.TelH</td>
+                <td>@m.Patient.Moble1</td>
+                <td>
+                    <a href="@Url.Action("Record", "Patient", new { id = @m.Patient.PatNo })" class="btn btn-info ">選擇</a>
+                    @{
+                        if (m.PatientSettings == null || m.PatientSettings.IsCompleted == null)
+                        {
+                            <button id="@m.Patient.PatNo" class="btn btn-info patientComplete">加入待編輯</button>
+                        }
+                        else
+                        {
+                            if (!((bool)m.PatientSettings.IsCompleted))
+                            {
+                                <button class="btn btn-default" disabled>已加入待編輯</button>
+                            }
+                            else
+                            {
+                                <button id="@m.Patient.PatNo" class="btn btn-info patientComplete">加入待編輯</button>
+                            }
+                        }
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+
+<script>
+    $('.patientComplete').click(function () {
+        var patno = $(this).attr('id');
+        $.ajax({
+            type: 'POST',
+            url: '/Patient/SetPatientComplete',
+            data: { patNo: patno },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        location.reload();
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>

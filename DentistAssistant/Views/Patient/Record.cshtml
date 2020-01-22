@@ -40,26 +40,29 @@
         background: #555;
         color: #f1f1f1;
     }
+
     .content {
         padding: 0px;
     }
+
     .sticky {
         position: fixed;
         top: 0;
         width: 100%
     }
 </style>
-<style>    
-.navbar-fixed-top2 {
-  position: fixed;
-  right: 0;
-  left: 0;
-  z-index: 1030;
-}
-.navbar-fixed-top2 {
-  top: 46px;
-  border-width: 0 0 1px;
-}
+<style>
+    .navbar-fixed-top2 {
+        position: fixed;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .navbar-fixed-top2 {
+        top: 46px;
+        border-width: 0 0 1px;
+    }
 </style>
 
 @functions
@@ -80,7 +83,17 @@
     <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
 </div>
 <div style="padding-top:57px">
-    <h1>牙醫療程紀錄單</h1>
+    <h1 style="display:inline">牙醫療程紀錄單</h1>
+    <div style="display:inline">
+        @if (Model.IsComplete)
+        {
+            <button id="patientComplete" class="btn btn-default pull-right">加入待編輯</button>
+        }
+        else
+        {
+            <button id="patientFinish" class="btn btn-default pull-right">完成編輯</button>
+        }
+    </div>
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="#" data-toggle="tab">牙醫療程紀錄單</a>
@@ -134,7 +147,13 @@
                                     </div>
                                     break;
                                 case "T":
-                                    @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })
+                                    @*<textarea class="col-md-12 text-primary" style="width:100%" , rows="6" disabled>
+                                        @Html.Raw(Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
+                                        </textarea>*@
+                                    <div>
+                                        @Html.Raw(Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription)
+                                    </div>
+                                    @*@Html.DisplayFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnit.QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })*@
                                     break;
                             }
                             @if (Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits.Count > 0)
@@ -161,7 +180,14 @@
                                             </div>
                                             break;
                                         case "T":
-                                            @Html.TextAreaFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })
+                                            @*<textarea class="col-md-12 text-primary" style="width:100%" , rows="6" disabled>
+                                                @Html.Raw(Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
+                                                </textarea>*@
+                                            <div>
+                                                @Html.Raw(Model.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription)
+                                            </div>
+
+                                            @*@Html.DisplayFor(m => m.QACategorys[i].QAGroupUnits[j].QAQParentUnits[k].QAQUnits[l].QAAValueDescription, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "6", disabled = "disabled" })*@
                                             break;
                                     }
                                 }
@@ -1200,156 +1226,156 @@
                             <td class="col-md-5">
                                 @for (int i = 0; i < Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF.Count; i++)
                                 {
-                                <div id="@Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Id" class="fdiArea">
-                                    <div class="form-group col-md-12">
-                                        <hr />
+                                    <div id="@Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Id" class="fdiArea">
+                                        <div class="form-group col-md-12">
+                                            <hr />
+                                        </div>
+                                        <div class="form-group col-md-12" @(Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area1 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                var area5 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("5")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                string area1string = string.Empty;
+                                                                foreach (FdiDetails f in area1)
+                                                                {
+                                                                    area1string += f.FdiPosition;
+                                                                }
+                                                                foreach (FdiDetails f in area5)
+                                                                {
+                                                                    switch (f.FdiPosition)
+                                                                    {
+                                                                        case "1":
+                                                                            area1string += "A";
+                                                                            break;
+                                                                        case "2":
+                                                                            area1string += "B";
+                                                                            break;
+                                                                        case "3":
+                                                                            area1string += "C";
+                                                                            break;
+                                                                        case "4":
+                                                                            area1string += "D";
+                                                                            break;
+                                                                        case "5":
+                                                                            area1string += "E";
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                <label class="text-primary">@area1string</label>
+                                                            }
+                                                        </td>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area2 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
+                                                                var area6 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("6")).ToList();
+                                                                string area2string = string.Empty;
+                                                                foreach (FdiDetails f in area2)
+                                                                {
+                                                                    area2string += f.FdiPosition;
+                                                                }
+                                                                foreach (FdiDetails f in area6)
+                                                                {
+                                                                    switch (f.FdiPosition)
+                                                                    {
+                                                                        case "1":
+                                                                            area2string += "A";
+                                                                            break;
+                                                                        case "2":
+                                                                            area2string += "B";
+                                                                            break;
+                                                                        case "3":
+                                                                            area2string += "C";
+                                                                            break;
+                                                                        case "4":
+                                                                            area2string += "D";
+                                                                            break;
+                                                                        case "5":
+                                                                            area2string += "E";
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                <label class="text-primary">@area2string</label>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area4 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                var area8 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("8")).OrderByDescending(c => c.FdiPosition).ToList();
+                                                                string area4string = string.Empty;
+                                                                foreach (FdiDetails f in area4)
+                                                                {
+                                                                    area4string += f.FdiPosition;
+                                                                }
+                                                                foreach (FdiDetails f in area8)
+                                                                {
+                                                                    switch (f.FdiPosition)
+                                                                    {
+                                                                        case "1":
+                                                                            area4string += "A";
+                                                                            break;
+                                                                        case "2":
+                                                                            area4string += "B";
+                                                                            break;
+                                                                        case "3":
+                                                                            area4string += "C";
+                                                                            break;
+                                                                        case "4":
+                                                                            area4string += "D";
+                                                                            break;
+                                                                        case "5":
+                                                                            area4string += "E";
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                <label class="text-primary">@area4string</label>
+                                                            }
+                                                        </td>
+                                                        <td style="width:50%;">
+                                                            @{
+                                                                var area3 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
+                                                                var area7 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("7")).ToList();
+                                                                string area3string = string.Empty;
+                                                                foreach (FdiDetails f in area3)
+                                                                {
+                                                                    area3string += f.FdiPosition;
+                                                                }
+                                                                foreach (FdiDetails f in area7)
+                                                                {
+                                                                    switch (f.FdiPosition)
+                                                                    {
+                                                                        case "1":
+                                                                            area3string += "A";
+                                                                            break;
+                                                                        case "2":
+                                                                            area3string += "B";
+                                                                            break;
+                                                                        case "3":
+                                                                            area3string += "C";
+                                                                            break;
+                                                                        case "4":
+                                                                            area3string += "D";
+                                                                            break;
+                                                                        case "5":
+                                                                            area3string += "E";
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                <label class="text-primary">@area3string</label>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            @Html.TextAreaFor(m => m.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
+                                        </div>
                                     </div>
-                                    <div class="form-group col-md-12" @(Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Count > 0 ? "" : "style=display:none")>
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width:50%;">
-                                                        @{
-                                                            var area1 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("1")).OrderByDescending(c => c.FdiPosition).ToList();
-                                                            var area5 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("5")).OrderByDescending(c => c.FdiPosition).ToList();
-                                                            string area1string = string.Empty;
-                                                            foreach (FdiDetails f in area1)
-                                                            {
-                                                                area1string += f.FdiPosition;
-                                                            }
-                                                            foreach (FdiDetails f in area5)
-                                                            {
-                                                                switch (f.FdiPosition)
-                                                                {
-                                                                    case "1":
-                                                                        area1string += "A";
-                                                                    break;
-                                                                            case "2":
-                                                                        area1string += "B";
-                                                                    break;
-                                                                            case "3":
-                                                                        area1string += "C";
-                                                                    break;
-                                                                            case "4":
-                                                                        area1string += "D";
-                                                                    break;
-                                                                            case "5":
-                                                                        area1string += "E";
-                                                                    break;
-                                                                }
-                                                            }
-                                                            <label class="text-primary">@area1string</label>
-                                                        }
-                                                    </td>
-                                                    <td style="width:50%;">
-                                                        @{
-                                                            var area2 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("2")).ToList();
-                                                            var area6 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("6")).ToList();
-                                                            string area2string = string.Empty;
-                                                            foreach (FdiDetails f in area2)
-                                                            {
-                                                                area2string += f.FdiPosition;
-                                                            }
-                                                            foreach (FdiDetails f in area6)
-                                                            {
-                                                                switch (f.FdiPosition)
-                                                                {
-                                                                    case "1":
-                                                                        area2string += "A";
-                                                                    break;
-                                                                            case "2":
-                                                                        area2string += "B";
-                                                                    break;
-                                                                            case "3":
-                                                                        area2string += "C";
-                                                                    break;
-                                                                            case "4":
-                                                                        area2string += "D";
-                                                                    break;
-                                                                            case "5":
-                                                                        area2string += "E";
-                                                                    break;
-                                                                }
-                                                            }
-                                                            <label class="text-primary">@area2string</label>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width:50%;">
-                                                        @{
-                                                            var area4 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
-                                                            var area8 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("8")).OrderByDescending(c => c.FdiPosition).ToList();
-                                                            string area4string = string.Empty;
-                                                            foreach (FdiDetails f in area4)
-                                                            {
-                                                                area4string += f.FdiPosition;
-                                                            }
-                                                            foreach (FdiDetails f in area8)
-                                                            {
-                                                                switch (f.FdiPosition)
-                                                                {
-                                                                    case "1":
-                                                                        area4string += "A";
-                                                                    break;
-                                                                            case "2":
-                                                                        area4string += "B";
-                                                                    break;
-                                                                            case "3":
-                                                                        area4string += "C";
-                                                                    break;
-                                                                            case "4":
-                                                                        area4string += "D";
-                                                                    break;
-                                                                            case "5":
-                                                                        area4string += "E";
-                                                                    break;
-                                                                }
-                                                            }
-                                                            <label class="text-primary">@area4string</label>
-                                                        }
-                                                    </td>
-                                                    <td style="width:50%;">
-                                                        @{
-                                                            var area3 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("3")).ToList();
-                                                            var area7 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("7")).ToList();
-                                                            string area3string = string.Empty;
-                                                            foreach (FdiDetails f in area3)
-                                                            {
-                                                                area3string += f.FdiPosition;
-                                                            }
-                                                            foreach (FdiDetails f in area7)
-                                                            {
-                                                                switch (f.FdiPosition)
-                                                                {
-                                                                    case "1":
-                                                                        area3string += "A";
-                                                                    break;
-                                                                            case "2":
-                                                                        area3string += "B";
-                                                                    break;
-                                                                            case "3":
-                                                                        area3string += "C";
-                                                                    break;
-                                                                            case "4":
-                                                                        area3string += "D";
-                                                                    break;
-                                                                            case "5":
-                                                                        area3string += "E";
-                                                                    break;
-                                                                }
-                                                            }
-                                                            <label class="text-primary">@area3string</label>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        @Html.TextAreaFor(m => m.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].Fdi.Description, new { @class = "col-md-12 text-primary", style = "width:100%", rows = "3", disabled = "disabled" })
-                                    </div>
-                                </div>
                                 }
                             </td>
                             <td class="col-md-5">
@@ -1378,19 +1404,19 @@
                                                                     {
                                                                         case "1":
                                                                             area1string += "A";
-                                                                        break;
-                                                                                case "2":
+                                                                            break;
+                                                                        case "2":
                                                                             area1string += "B";
-                                                                        break;
-                                                                                case "3":
+                                                                            break;
+                                                                        case "3":
                                                                             area1string += "C";
-                                                                        break;
-                                                                                case "4":
+                                                                            break;
+                                                                        case "4":
                                                                             area1string += "D";
-                                                                        break;
-                                                                                case "5":
+                                                                            break;
+                                                                        case "5":
                                                                             area1string += "E";
-                                                                        break;
+                                                                            break;
                                                                     }
                                                                 }
                                                                 <label class="text-primary">@area1string</label>
@@ -1411,19 +1437,19 @@
                                                                     {
                                                                         case "1":
                                                                             area2string += "A";
-                                                                        break;
-                                                                                case "2":
+                                                                            break;
+                                                                        case "2":
                                                                             area2string += "B";
-                                                                        break;
-                                                                                case "3":
+                                                                            break;
+                                                                        case "3":
                                                                             area2string += "C";
-                                                                        break;
-                                                                                case "4":
+                                                                            break;
+                                                                        case "4":
                                                                             area2string += "D";
-                                                                        break;
-                                                                                case "5":
+                                                                            break;
+                                                                        case "5":
                                                                             area2string += "E";
-                                                                        break;
+                                                                            break;
                                                                     }
                                                                 }
                                                                 <label class="text-primary">@area2string</label>
@@ -1446,19 +1472,19 @@
                                                                     {
                                                                         case "1":
                                                                             area4string += "A";
-                                                                        break;
-                                                                                case "2":
+                                                                            break;
+                                                                        case "2":
                                                                             area4string += "B";
-                                                                        break;
-                                                                                case "3":
+                                                                            break;
+                                                                        case "3":
                                                                             area4string += "C";
-                                                                        break;
-                                                                                case "4":
+                                                                            break;
+                                                                        case "4":
                                                                             area4string += "D";
-                                                                        break;
-                                                                                case "5":
+                                                                            break;
+                                                                        case "5":
                                                                             area4string += "E";
-                                                                        break;
+                                                                            break;
                                                                     }
                                                                 }
                                                                 <label class="text-primary">@area4string</label>
@@ -1479,19 +1505,19 @@
                                                                     {
                                                                         case "1":
                                                                             area3string += "A";
-                                                                        break;
-                                                                                case "2":
+                                                                            break;
+                                                                        case "2":
                                                                             area3string += "B";
-                                                                        break;
-                                                                                case "3":
+                                                                            break;
+                                                                        case "3":
                                                                             area3string += "C";
-                                                                        break;
-                                                                                case "4":
+                                                                            break;
+                                                                        case "4":
                                                                             area3string += "D";
-                                                                        break;
-                                                                                case "5":
+                                                                            break;
+                                                                        case "5":
                                                                             area3string += "E";
-                                                                        break;
+                                                                            break;
                                                                     }
                                                                 }
                                                                 <label class="text-primary">@area3string</label>
@@ -1601,6 +1627,49 @@
                     if (result.status) {
                         createTime.text(result.info.time);
                         userName.text(result.info.userName);
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    $('#patientComplete').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '/Patient/SetPatientComplete',
+            data: { patNo: '@(Model.Patient.PatNo)' },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        location.reload();
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                }
+                else {
+                    alert('沒有回應');
+                }
+            }
+        });
+    });
+    $('#patientFinish').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '/Patient/SetPatientFinish',
+            data: { patNo: '@(Model.Patient.PatNo)' },
+            success: function (result) {
+                if (result) {
+                    if (result.status) {
+                        location.reload();
                     }
                     else {
                         alert(result.message);

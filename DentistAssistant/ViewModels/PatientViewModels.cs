@@ -17,6 +17,7 @@ namespace DentistAssistant.ViewModels
         public ShareViewModel ShareViewModel { get; set; }
         public bool IsFirstTimeExist { get; set; } = false;
         public PatientSettingRecordViewModel PatientSettingRecordViewModel { get; set; }
+        public bool IsComplete { get; set; }
     }
 
     public class PatientSettingRecordViewModel
@@ -107,5 +108,11 @@ namespace DentistAssistant.ViewModels
     public class PatientUnit
     {
         public string Birth { get; set; }
+    }
+
+    public class PatientCompleteViewModel
+    {
+        public Patients Patient { get; set; }
+        public PatientSettings PatientSettings { get; set; }
     }
 }

@@ -17,6 +17,8 @@ namespace DentistAssistant.Models
         public string Introduce { get; set; }
         public DateTime? FirstTimeTime { get; set; }
         public string SuggestionNote { get; set; }
+        public bool? IsCompleted { get; set; }
+        public DateTime? CreateTime { get; set; }
 
         public virtual ICollection<PatientRecords> PatientRecords { get; set; }
     }

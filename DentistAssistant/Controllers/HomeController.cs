@@ -14,7 +14,20 @@ namespace DentistAssistant.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            using (var def = new DoctorContext())
+            {
+                using (var daef = new DentistAssistantContext())
+                {
+                    var patientSetting = (from ps in daef.PatientSettings
+                                          where ps.IsCompleted.Equals(false)
+                                          select ps.Id).ToList();
+
+                    var patients = (from p in def.Patients
+                                    where patientSetting.Contains(p.PatNo)
+                                    select p).ToList();
+                    return View(patients);
+                }
+            }
         }
 
         public IActionResult Privacy()
