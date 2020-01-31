@@ -136,7 +136,7 @@ namespace DentistAssistant.Controllers
                     //patientRecord.ShareViewModel = GetShareImage(patient.Id);
                     patientRecord.ShareViewModel = GetShare(patient.PatNo);
 
-                    if(patientSettingFirstTimeRecord != null)
+                    if (patientSettingFirstTimeRecord != null)
                     {
                         patientRecord.Introduce = patientSettingFirstTimeRecord.PatientSetting.Introduce;
                         if (!string.IsNullOrEmpty(patientSettingFirstTimeRecord.PatientSetting.QadoctorNo))
@@ -149,15 +149,19 @@ namespace DentistAssistant.Controllers
                             patientRecord.IsFirstTimeExist = true;
                             patientRecord.PatientSettingRecordViewModel = patientSettingFirstTimeRecord;
                         }
-                    }
 
-                    if (patientSettingFirstTimeRecord.PatientSetting.IsCompleted == null || patientSettingFirstTimeRecord.PatientSetting.IsCompleted.Equals(true))
-                    {
-                        patientRecord.IsComplete =  true;
+                        if (patientSettingFirstTimeRecord.PatientSetting.IsCompleted == null || patientSettingFirstTimeRecord.PatientSetting.IsCompleted.Equals(true))
+                        {
+                            patientRecord.IsComplete = true;
+                        }
+                        else
+                        {
+                            patientRecord.IsComplete = false;
+                        }
                     }
                     else
                     {
-                        patientRecord.IsComplete =  false;
+                        patientRecord.IsComplete = true;
                     }
                     return View(patientRecord);
                 }

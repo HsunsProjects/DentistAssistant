@@ -34,7 +34,8 @@ namespace DentistAssistant.Models
             if (!optionsBuilder.IsConfigured)
             {
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-39AOD1O\\HSUNSPROJECTS;Database=DentistAssistant;User Id=sa;Password=Eason0811;Trusted_Connection=True;Integrated Security=false;");
+                //optionsBuilder.UseSqlServer("Server=DESKTOP-39AOD1O\\HSUNSPROJECTS;Database=DentistAssistant;User Id=sa;Password=Eason0811;Trusted_Connection=True;Integrated Security=false;");
+                optionsBuilder.UseSqlServer("Server=Localhost\\BESTCHOICE;Database=DentistAssistant;User Id=bestchoice;Password=0937093374;Trusted_Connection=True;Integrated Security=false;");
             }
         }
 

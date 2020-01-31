@@ -18,8 +18,10 @@ namespace DentistAssistant.Controllers
             {
                 using (var daef = new DentistAssistantContext())
                 {
+                    var x = daef.PatientSettings.ToList();
+
                     var patientSetting = (from ps in daef.PatientSettings
-                                          where ps.IsCompleted.Equals(false)
+                                          where ps.IsCompleted != null && ps.IsCompleted != true
                                           select ps.Id).ToList();
 
                     var patients = (from p in def.Patients
