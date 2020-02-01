@@ -32,10 +32,16 @@ namespace DentistAssistant.Controllers
                 var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
+                    var Notes = (from qaa in daef.Qaa
+                                 where qaa.PatientId.ToLower().Equals(id.ToLower()) &&
+                                 qaa.Qaqid.Equals(30)
+                                 select qaa).FirstOrDefault();
+
                     var patient = (from p in def.Patients
                                    where p.PatNo.ToLower().Equals(id.ToLower()) &&
                                          p.Enable.Equals(true)
                                    select p).FirstOrDefault();
+
                     var patientSettingFirstTimeRecord = (from ps in daef.PatientSettings
                                                          where ps.Id.ToUpper().Equals(patient.PatNo.ToUpper())
                                                          select new PatientSettingRecordViewModel()
@@ -87,6 +93,7 @@ namespace DentistAssistant.Controllers
                     var patientRecord = new PatientRecordViewModel()
                     {
                         Patient = patient,
+                        Notes = Notes == null ? null : Notes.ValueDescription,
                         QACategorys = (from qac in daef.Qacategorys
                                        select new QACategorys()
                                        {
@@ -176,6 +183,11 @@ namespace DentistAssistant.Controllers
                 var users = UsersInfo.Users;
                 using (var daef = new DentistAssistantContext())
                 {
+                    var Notes = (from qaa in daef.Qaa
+                                 where qaa.PatientId.ToLower().Equals(id.ToLower()) &&
+                                 qaa.Qaqid.Equals(30)
+                                 select qaa).FirstOrDefault();
+
                     SuggestionViewModel suggestionViewModel = new SuggestionViewModel();
                     suggestionViewModel.Patient = (from p in def.Patients
                                                    where p.PatNo.ToLower().Equals(id.ToLower()) &&
@@ -230,6 +242,7 @@ namespace DentistAssistant.Controllers
 
                         suggestionViewModel.PatientRecordSuggestUnit = patientRecordSuggestUnit;
                         suggestionViewModel.SuggestionNote = patientSetting.SuggestionNote;
+                        suggestionViewModel.Notes = Notes == null ? null : Notes.ValueDescription;
                     }
                     else
                     {

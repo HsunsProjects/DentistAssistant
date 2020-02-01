@@ -67,10 +67,11 @@
 </style>
 
 <div id="myHeader" class="navbar-fixed-top2" style="z-index:1;background-color:lightskyblue;">
-    <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
+    <h4>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h4>
+    <h4>注意事項：@Html.Raw(Model.Notes)</h4>
 </div>
-<div style="padding-top:57px">
-    <h1 style="display:inline">診療建議單</h1>
+<div style="padding-top:75px">
+    <h2 style="display:inline">診療建議單</h2>
     <ul class="nav nav-tabs">
         <li>
             <a href="@Url.Action("Record", "Patient", new { id = Model.Patient.PatNo })">牙醫療程紀錄單</a>

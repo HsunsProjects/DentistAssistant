@@ -80,10 +80,11 @@
 }
 
 <div id="myHeader" class="navbar-fixed-top2" style="z-index:1;background-color:lightskyblue;">
-    <h2>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h2>
+    <h4>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h4>
+    <h4>注意事項：@Html.Raw(Model.Notes)</h4>
 </div>
-<div style="padding-top:57px">
-    <h1 style="display:inline">牙醫療程紀錄單</h1>
+<div style="padding-top:75px">
+    <h2 style="display:inline">牙醫療程紀錄單</h2>
     <div style="display:inline">
         @if (Model.IsComplete)
         {
@@ -1302,7 +1303,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width: 50%;">
                                                             @{
                                                                 var area4 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("4")).OrderByDescending(c => c.FdiPosition).ToList();
                                                                 var area8 = @Model.PatientSettingRecordViewModel.PatientRecordUnit.FdiUnitsF[i].FdiDetails.Where(c => c.FdiArea.Equals("8")).OrderByDescending(c => c.FdiPosition).ToList();

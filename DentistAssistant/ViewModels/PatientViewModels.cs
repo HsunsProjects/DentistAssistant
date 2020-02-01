@@ -10,6 +10,7 @@ namespace DentistAssistant.ViewModels
     public class PatientRecordViewModel
     {
         public Patients Patient { get; set; }
+        public string Notes { get; set; }
         public List<QACategorys> QACategorys { get; set; }
         public string Introduce { get; set; }
         public IEnumerable<SelectListItem> QADoctorList { get; set; }
@@ -101,6 +102,7 @@ namespace DentistAssistant.ViewModels
     public class SuggestionViewModel
     {
         public Patients Patient { get; set; }
+        public string Notes { get; set; }
         public string SuggestionNote { get; set; }
         public PatientRecordSuggestUnit PatientRecordSuggestUnit { get; set; }
     }
