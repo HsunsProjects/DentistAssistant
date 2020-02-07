@@ -180,8 +180,6 @@ namespace DentistAssistant.Models
 
                 entity.Property(e => e.Qaqid).HasColumnName("QAQId");
 
-                entity.Property(e => e.ValueDescription).HasMaxLength(200);
-
                 entity.HasOne(d => d.Qaq)
                     .WithMany(p => p.Qaa)
                     .HasForeignKey(d => d.Qaqid)

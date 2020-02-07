@@ -83,7 +83,7 @@
     <h4>病患：@(Model.Patient.PatName)　病患編號：@(Model.Patient.PatNo)</h4>
     <h4>注意事項：@Html.Raw(Model.Notes)</h4>
 </div>
-<div style="padding-top:75px">
+<div id="pageStart">
     <h2 style="display:inline">牙醫療程紀錄單</h2>
     <div style="display:inline">
         @if (Model.IsComplete)
@@ -1681,5 +1681,12 @@
                 }
             }
         });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var headerHeight = $('#myHeader').height();
+
+        $('#pageStart').css('padding-top', headerHeight + 'px');;
     });
 </script>
