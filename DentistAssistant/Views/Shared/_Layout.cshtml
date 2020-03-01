@@ -54,8 +54,11 @@
     </environment>
     <script>
         $(document).on('click', '.insertFdiDesc', function () {
-            $('#fdiDescription').val($('#fdiDescription').val() + this.text);
+            $('#fdiDescription').val($('#fdiDescription').val() + this.innerText);
         });
+        //$(document).on('click', '.insertFdiDesc', function () {
+        //    $('#fdiDescription').val($('#fdiDescription').val() + this.text);
+        //});
     </script>
     @RenderSection("Scripts", required: false)
 </body>

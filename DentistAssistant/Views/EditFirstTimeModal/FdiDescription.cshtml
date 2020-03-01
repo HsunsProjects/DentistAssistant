@@ -12,32 +12,32 @@
     <title>Index</title>
     <style rel="stylesheet" type="text/css">
 
-            .table {
-                table-layout: fixed;
-                border-collapse: collapse;
+        .table {
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+            .table td {
+                text-align: center;
+                border: 1px solid black;
             }
 
-                .table td {
-                    text-align: center;
-                    border: 1px solid black;
-                }
+            .table tr:first-child td {
+                border-top: 0;
+            }
 
-                .table tr:first-child td {
-                    border-top: 0;
-                }
+            .table tr td:first-child {
+                border-left: 0;
+            }
 
-                .table tr td:first-child {
-                    border-left: 0;
-                }
+            .table tr:last-child td {
+                border-bottom: 0;
+            }
 
-                .table tr:last-child td {
-                    border-bottom: 0;
-                }
-
-                .table tr td:last-child {
-                    border-right: 0;
-                }
-        </style>
+            .table tr td:last-child {
+                border-right: 0;
+            }
+    </style>
 </head>
 <body>
     <div class="col-md-12">
@@ -165,7 +165,67 @@
             <h4>
                 <label>片語</label>
             </h4>
-            <div class="col-md-4">
+            <div>
+                <div>
+                    <div class="col-md-4 col-sm-4" style="display:table-cell;">
+                        @Html.DropDownListFor(m => m.PhraseGroupId1, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg1" })
+                    </div>
+                    <div class="col-md-4 col-sm-4" style="display:table-cell">
+                        @Html.DropDownListFor(m => m.PhraseGroupId2, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg2" })
+                    </div>
+                    <div class="col-md-4 col-sm-4" style="display:table-cell">
+                        @Html.DropDownListFor(m => m.PhraseGroupId3, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg3" })
+                    </div>
+                </div>
+                <div style="height:50px;">
+                    <div id="phrases1" class="col-md-4 col-sm-4" style="overflow-y:auto;height:100%;">
+
+                    </div>
+                    <div id="phrases2" class="col-md-4 col-sm-4" style="overflow-y:auto;height:100%;">
+
+                    </div>
+                    <div id="phrases3" class="col-md-4 col-sm-4" style="overflow-y:auto;height:100%;">
+
+                    </div>
+                </div>
+            </div>
+            @*<div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DropDownListFor(m => m.PhraseGroupId1, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg1" })
+                            </th>
+                            <th>
+                                @Html.DropDownListFor(m => m.PhraseGroupId2, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg2" })
+                            </th>
+                            <th>
+                                @Html.DropDownListFor(m => m.PhraseGroupId3, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg3" })
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="height:10px;">
+                        <tr>
+                            <td style="height:30px;">
+                                <div id="phrases1" style="overflow-y:auto;">
+
+                                </div>
+                            </td>
+                            <td style="height:30px;">
+                                <div id="phrases2" style="overflow-y:auto;">
+
+                                </div>
+                            </td>
+                            <td style="height:30px;">
+                                <div id="phrases3" style="overflow-y:auto;">
+
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>*@
+            @*<div class="col-md-4">
                 @Html.DropDownListFor(m => m.PhraseGroupId1, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg1" })
                 <select id="phrases1" multiple class="form-control" size="5">
                 </select>
@@ -179,7 +239,7 @@
                 @Html.DropDownListFor(m => m.PhraseGroupId3, Model.PhraseGroups, "選擇片語", new { @class = "form-control", id = "pg3" })
                 <select id="phrases3" multiple class="form-control" size="5">
                 </select>
-            </div>
+            </div>*@
         </div>
         <div>
             <hr />
@@ -490,7 +550,10 @@
                             if (result.data.length > 0) {
                                 $.each(result.data, function (i, item) {
                                     phrases1.append(
-                                        $('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
+                                        $('<div />', { 'text': item.description }).addClass('insertFdiDesc').append()
+                                        //$('<a/>', { 'text': item.description }).append(),
+                                        //$('<br />')
+                                        //$('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
                                     );
                                 });
                             }
@@ -520,7 +583,10 @@
                             if (result.data.length > 0) {
                                 $.each(result.data, function (i, item) {
                                     phrases2.append(
-                                        $('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
+                                        $('<div />', { 'text': item.description }).addClass('insertFdiDesc').append()
+                                        //$('<a/>', { 'text': item.description }).append(),
+                                        //$('<br />')
+                                        //$('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
                                     );
                                 });
                             }
@@ -550,7 +616,10 @@
                             if (result.data.length > 0) {
                                 $.each(result.data, function (i, item) {
                                     phrases3.append(
-                                        $('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
+                                        $('<div />', { 'text': item.description }).addClass('insertFdiDesc').append()
+                                        //$('<a/>', { 'text': item.description }).append(),
+                                        //$('<br />')
+                                        //$('<option/>', { 'value': item.id, 'text': item.description }).addClass('insertFdiDesc').append()
                                     );
                                 });
                             }
